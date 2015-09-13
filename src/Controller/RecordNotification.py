@@ -45,8 +45,9 @@ class RecordNotification(ControllerBase):
 		self.forceBindRecordTimer.callback.append(self.begin)
  
 		# Default configuration
-		self.setOption( 'send_on_start', NoSave(ConfigYesNo( default = False )), _("Send notification on record start") )
-		self.setOption( 'send_on_end',   NoSave(ConfigYesNo( default = True )),  _("Send notification on record end") )
+		self.setOption( 'send_on_start',       NoSave(ConfigYesNo( default = False )),  _("Send notification on record start") )
+		self.setOption( 'send_on_end',	       NoSave(ConfigYesNo( default = True )),   _("Send notification on record end") )
+		self.setOption( 'include_description', NoSave(ConfigYesNo( default = False )),  _("Include timer description") )
 		#TODO option to send free space
 
 	def begin(self):
@@ -80,6 +81,7 @@ class RecordNotification(ControllerBase):
 
 	def onRecordEvent(self, timer):
 		text = ""
+		include_description = self.getValue('include_description')
 		
 		if timer.justplay:
 			pass
@@ -94,6 +96,8 @@ class RecordNotification(ControllerBase):
 							+ strftime(_("%Y.%m.%d %H:%M"), localtime(timer.begin)) + " - " \
 							+ strftime(_("%H:%M"), localtime(timer.end)) + "\t" \
 							+ str(timer.service_ref and timer.service_ref.getServiceName() or "")
+				if include_description:
+					text += "\n\n" + str(timer.description)
 				del timer
 			
 		# Finished repeating timer will report the state StateEnded+1 or StateWaiting
@@ -104,6 +108,8 @@ class RecordNotification(ControllerBase):
 							+ strftime(_("%Y.%m.%d %H:%M"), localtime(timer.begin)) + " - " \
 							+ strftime(_("%H:%M"), localtime(timer.end)) + "\t" \
 							+ str(timer.service_ref and timer.service_ref.getServiceName() or "")
+				if include_description:
+					text += "\n\n" + str(timer.description)
 				del timer
 		
 		if text:
