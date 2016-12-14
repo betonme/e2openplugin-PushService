@@ -50,10 +50,11 @@ class MissingTimers(ControllerBase):
 		tomorrow_end   = tomorrow_begin + 24*60*60
 		
 		for timer in NavigationInstance.instance.RecordTimer.timer_list:
-			if not timer.disabled:
+			if not timer.disabled and str(timer.service_ref)[0]!="-":
 				timer_begin = timer.begin
 				if tomorrow_begin <= timer_begin <= tomorrow_end:
 					timers += 1
+					break
 				
 		if timers == 0:
 			callback( SUBJECT, BODY % strftime(_("%Y.%m.%d"), localtime(tomorrow_begin)))

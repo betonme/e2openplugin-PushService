@@ -64,7 +64,7 @@ class DeactivatedTimers(ControllerBase):
 		
 		import NavigationInstance
 		for timer in NavigationInstance.instance.RecordTimer.timer_list + NavigationInstance.instance.RecordTimer.processed_timers:
-			if timer.disabled and TAG not in timer.tags:
+			if timer.disabled and TAG not in timer.tags and str(timer.service_ref)[0]!="-":
 				text += timerToString(timer) + "\r\n"
 				
 				if list_similar:

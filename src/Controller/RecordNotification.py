@@ -89,6 +89,9 @@ class RecordNotification(ControllerBase):
 		if timer.justplay:
 			pass
 		
+		elif str(timer.service_ref)[0]!="-":
+			pass
+		
 		elif timer.state == timer.StatePrepared:
 			pass
 		

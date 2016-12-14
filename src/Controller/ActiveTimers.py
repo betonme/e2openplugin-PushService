@@ -50,7 +50,7 @@ class ActiveTimers(ControllerBase):
 		self.timers = []
 		text = ""
 		for timer in NavigationInstance.instance.RecordTimer.timer_list + NavigationInstance.instance.RecordTimer.processed_timers:
-			if not timer.disabled and TAG not in timer.tags:
+			if not timer.disabled and TAG not in timer.tags and str(timer.service_ref)[0]!="-":
 				text += str(timer.name) + "    " \
 							+ strftime(_("%Y.%m.%d %H:%M"), localtime(timer.begin)) + " - " \
 							+ strftime(_("%H:%M"), localtime(timer.end)) + "    " \
