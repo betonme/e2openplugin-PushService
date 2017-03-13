@@ -22,10 +22,10 @@ from Components.config import ConfigYesNo, NoSave
 # Plugin internal
 from Plugins.Extensions.PushService.__init__ import _
 from Plugins.Extensions.PushService.ControllerBase import ControllerBase
+from Plugins.Extensions.PushService.Logger import log
 
 # Plugin specific
 from time import localtime, strftime
-
 
 # Constants
 SUBJECT = _("Found deactivated timer(s)")
@@ -116,7 +116,7 @@ class DeactivatedTimers(ControllerBase):
 		# Set tag to avoid resending it
 		for timer in self.timers:
 			if TAG not in timer.tags:
-				print "[PS] timer append tag"
+				log.debug( "[PS] timer append tag" )
 				timer.tags.append(TAG)
 		NavigationInstance.instance.RecordTimer.saveTimer()
 		self.timers = []

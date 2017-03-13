@@ -20,8 +20,8 @@
 from Components.config import ConfigYesNo, NoSave
 
 # Plugin internal
-#from Plugins.Extensions.PushService.__init__ import _
 from Plugins.Extensions.PushService.ControllerBase import ControllerBase
+from Plugins.Extensions.PushService.Logger import log
 
 # Plugin specific
 from time import localtime, strftime
@@ -47,7 +47,7 @@ class StandbyNotification(ControllerBase):
 		self.setOption( 'send_after_standby',   NoSave(ConfigYesNo( default = True )),  _("Send notification after standby") )
 		
 	def leaveStandby(self, dummy=None):
-		#print "!!!!!!!!!!!!!!!!!leave standby"
+		#log.debug( "leave standby" )
 		
 		if self.getValue('send_after_standby'):
 			text = _("Enigma2 wakeup after Standby")
@@ -58,7 +58,7 @@ class StandbyNotification(ControllerBase):
 				gPushService.push(self, SUBJECT, text)
 	
 	def standbyCountChanged(self, configElement=None):
-		#print "!!!!!!!!!!!!!!!!!enter standby num", configElement.value
+		#log.debug( "enter standby num", configElement.value )
 		from Screens.Standby import inStandby
 		inStandby.onClose.append(self.leaveStandby)
 		

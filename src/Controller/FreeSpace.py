@@ -22,6 +22,7 @@ from Components.config import ConfigYesNo, ConfigText, ConfigNumber, NoSave
 # Plugin internal
 from Plugins.Extensions.PushService.__init__ import _
 from Plugins.Extensions.PushService.ControllerBase import ControllerBase
+from Plugins.Extensions.PushService.Logger import log
 
 # Plugin specific
 import os
@@ -92,7 +93,7 @@ class FreeSpace(ControllerBase):
 				if hdd is not None:
 					if hdd.isSleeping():
 						# Don't wake up HDD
-						print _("[FreeSpace] HDD is idle: ") + str(path)
+						log.debug( _("[FreeSpace] HDD is idle: ") + str(path) )
 						callback()
 		
 		# Check free space on path

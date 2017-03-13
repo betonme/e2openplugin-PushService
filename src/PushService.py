@@ -28,6 +28,7 @@ from Tools.BoundFunction import boundFunction
 # Plugin internal
 from . import _
 from PushServiceBase import PushServiceBase
+from Logger import log
 
 
 # States
@@ -59,14 +60,16 @@ class PushService(PushServiceBase):
 	######################################
 	# Statemachine and timer
 	def start(self):
-		print "PushService start"
+		log.reinit()
+		
+		log.info( "PushService start" )
 		self.stopTimer()
 		
 		self.begin()
 		self.next()
 
 	def stop(self):
-		print "PushService stop"
+		log.debug( "PushService stop" )
 		self.stopTimer()
 		
 		self.end()
@@ -74,7 +77,7 @@ class PushService(PushServiceBase):
 
 	def next(self, state = None):
 		if state: self.state = state
-		print "PushService next", self.state
+		log.debug( "PushService next", self.state )
 		
 		if self.state == PSBOOT:
 			self.startTimer( int(config.pushservice.bootdelay.value), PSBOOTRUN )

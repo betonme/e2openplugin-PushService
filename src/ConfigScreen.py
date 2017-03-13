@@ -43,7 +43,7 @@ from PushServiceBase import PushServiceBase
 from ModuleBase import ModuleBase
 from ServiceBase import ServiceBase
 from ControllerBase import ControllerBase
-
+from Logger import log
 
 # States
 (MAIN, SERVICES, CONTROLLERS) = range(3)
@@ -195,6 +195,11 @@ class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 					self.list.append( getConfigListEntry( _("Boot delay"), config.pushservice.bootdelay, 0 ) )
 				
 				self.list.append( getConfigListEntry( _("Push errors"), config.pushservice.push_errors, 0 ) )
+				
+				self.list.append( getConfigListEntry( _("Log to shell"), config.pushservice.log_shell, 0 ) )
+				self.list.append( getConfigListEntry( _("Log to file"), config.pushservice.log_write, 0 ) )
+				if config.pushservice.log_write.value:
+					self.list.append( getConfigListEntry( _("Log file path and name"), config.pushservice.log_file, 0 ) )
 			
 		elif self.state == SERVICES:
 			self["key_red"].setText(_("Main"))
@@ -432,11 +437,11 @@ class TestConsole(Screen):
 			elif isinstance(test, ControllerBase):
 				test.run( self.callback, self.errback )
 		except Exception, e:
-			text = _("PushService Test exception:") + "\n\n"
+			text = _("PushService Test exception:") + str(e) + "\n\n"
 			exc_type, exc_value, exc_traceback = sys.exc_info()
-			traceback.print_exception(exc_type, exc_value, exc_traceback, file=sys.stdout)
 			for line in traceback.format_exception(exc_type, exc_value, exc_traceback):
 				text += line
+			log.exception( text )
 			self.setText(text)
 
 	def callback(self, *args):

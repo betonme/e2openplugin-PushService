@@ -22,6 +22,7 @@ from Components.config import ConfigYesNo, ConfigText, ConfigNumber, NoSave
 # Plugin internal
 from Plugins.Extensions.PushService.__init__ import _
 from Plugins.Extensions.PushService.ControllerBase import ControllerBase
+from Plugins.Extensions.PushService.Logger import log
 
 # Plugin specific
 import os
@@ -76,20 +77,21 @@ class OPKGUpdateNotification(ControllerBase):
 	def opkgupgradableFinished(self, retval=None):
 		
 		try:
-			print "PushService retval: ",str(retval)
+			log.debug( "PushService retval: ",str(retval) )
 		except:
 			pass
 		try:
-			print "PushService self.data: ",str(self.data)
+			log.debug( "PushService self.data: ",str(self.data) )
 		except:
 			pass
 		
 		updates = ""
+		excepts = ""
 		
 		if self.data:
 			try:
 				for line in self.data.split("\n"):
-					print "PushService opkg upgradable data: ",line
+					log.debug( "PushService opkg upgradable data: ",line )
 					if line.startswith("Inflating"):
 						continue
 					if line.startswith("Updated"):
@@ -119,8 +121,11 @@ class OPKGUpdateNotification(ControllerBase):
 					updates += line + "\r\n"
 			except Exception, e:
 				updates += "\r\n\r\nException:\r\n" + str(e)
-				print "PushService except: ",str(e)
-
+				excepts += "\r\n\r\nException:\r\n" + str(e)
+		
+		if excepts:
+			log.exception( excepts )
+		
 		if updates:
 			#callback( SUBJECT, BODY % (updates) )
 			

@@ -22,20 +22,17 @@ import os, sys, traceback
 from Plugins.Plugin import PluginDescriptor
 
 # Config
-from Components.config import config, ConfigSubsection, ConfigNothing, ConfigEnableDisable, ConfigText, ConfigClock, ConfigSelectionNumber
-
-# Default encoding
-#from Components.Language import language
+from Components.config import config
 
 # Plugin internal
 from __init__ import _
 from PushService import PushService
-#from ConfigScreen import ConfigScreen
+from Logger import log
 
 
 # Constants
 NAME = "PushService"
-VERSION = "0.5.1"
+VERSION = "0.6"
 SUPPORT = "http://bit.ly/psihad"
 DONATE = "http://bit.ly/pspaypal"
 ABOUT = "\n  " + NAME + " " + VERSION + "\n\n" \
@@ -51,24 +48,6 @@ ABOUT = "\n  " + NAME + " " + VERSION + "\n\n" \
 gPushService = None
 
 
-# Config options
-config.pushservice                           = ConfigSubsection()
-
-config.pushservice.about                     = ConfigNothing()
-
-config.pushservice.enable                    = ConfigEnableDisable(default = True)
-
-config.pushservice.boxname                   = ConfigText(default = "Enigma2", fixed_size = False)
-config.pushservice.xmlpath                   = ConfigText(default = "/etc/enigma2/pushservice.xml", fixed_size = False)
-
-config.pushservice.time                      = ConfigClock(default = 0)
-config.pushservice.period                    = ConfigSelectionNumber(0, 1000, 1, default = 24)
-config.pushservice.runonboot                 = ConfigEnableDisable(default = True)
-config.pushservice.bootdelay                 = ConfigSelectionNumber(5, 1000, 5, default = 10)
-
-config.pushservice.push_errors               = ConfigEnableDisable(default = False)
-
-
 #######################################################
 # Plugin configuration
 def setup(session, **kwargs):
@@ -79,9 +58,7 @@ def setup(session, **kwargs):
 		###
 		session.open(ConfigScreen.ConfigScreen)
 	except Exception, e:
-		print _("PushService setup exception ") + str(e)
-		exc_type, exc_value, exc_traceback = sys.exc_info()
-		traceback.print_exception(exc_type, exc_value, exc_traceback, file=sys.stdout)
+		log.exception( ("PushService setup exception ") + str(e) )
 
 
 #######################################################
@@ -94,9 +71,7 @@ def autostart(reason, **kwargs):
 				gPushService = PushService()
 				gPushService.start()
 			except Exception, e:
-				print _("PushService autostart exception ") + str(e)
-				exc_type, exc_value, exc_traceback = sys.exc_info()
-				traceback.print_exception(exc_type, exc_value, exc_traceback, file=sys.stdout)
+				log.exception( ("PushService autostart exception ") + str(e) )
 
 
 #######################################################

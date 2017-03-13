@@ -24,6 +24,9 @@ try:
 except:
 	from OrderedDict import OrderedDict
 
+# Plugin internal
+from Logger import log
+
 
 # Module base class
 class ModuleBase(object):
@@ -90,8 +93,8 @@ class ModuleBase(object):
 				elif type(default) is int:
 					self.setValue(key, int(value))
 			except:
-				print _("PushService Module %s:\n") % ( self.getName() )
-				print _("Skipping config option:") + str(key) + " " + str(value)
+				log.debug( ("PushService Module %s:\n") % ( self.getName() ) )
+				log.debug( ("Skipping config option:") + str(key) + " " + str(value) )
 				continue
 
 	def getUniqueID(self):

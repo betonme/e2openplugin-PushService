@@ -22,6 +22,7 @@ from Components.config import config, NoSave, ConfigText, ConfigNumber, ConfigYe
 # Plugin internal
 from Plugins.Extensions.PushService.__init__ import _
 from Plugins.Extensions.PushService.ServiceBase import ServiceBase
+from Plugins.Extensions.PushService.Logger import log
 
 # Plugin specific
 from mail.mail import Message, sendmail
@@ -85,7 +86,7 @@ class SMTP(ServiceBase):
 				message.attach(attachment) #TODO change mime=None, charset=None, content=None):
 		
 		# Send message
-		print _("PushService PushMail: Sending message: %s") % subject
+		log.debug( ("PushService PushMail: Sending message: %s") % subject )
 		deferred, connector = sendmail(mailconf, message)
 		
 		# Add callbacks

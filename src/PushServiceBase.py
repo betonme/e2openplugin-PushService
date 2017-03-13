@@ -36,6 +36,7 @@ from Modules import Modules
 from ConfigFile import ConfigFile
 from ServiceBase import ServiceBase
 from ControllerBase import ControllerBase
+from Logger import log
 
 
 # Constants
@@ -262,7 +263,7 @@ class PushServiceBase(Modules, ConfigFile):
 				controller.end()
 
 	def run(self):
-		print _("PushService started: ") + strftime( _("%d.%m.%Y %H:%M"), localtime() )
+		log.debug( ("PushService started: ") + strftime( _("%d.%m.%Y %H:%M"), localtime() ) )
 		
 		controllers = self.controllers
 		self.pushcallbacks = {}
@@ -272,7 +273,7 @@ class PushServiceBase(Modules, ConfigFile):
 		if controllers:
 			for controller in controllers:
 				if controller.getEnable():
-					print _("PushService running: ") + str( controller.getName() )
+					log.debug( ("PushService running: ") + str( controller.getName() ) )
 					
 					try:
 						# Run controller
@@ -280,9 +281,8 @@ class PushServiceBase(Modules, ConfigFile):
 								boundFunction(self.runcallback, controller),
 								boundFunction(self.runerrback, controller) )
 					except Exception, e:
-						print _("PushService controller run() exception")
+						log.exception( "PushService controller run() exception" , str(e) )
 						exc_type, exc_value, exc_traceback = sys.exc_info()
-						traceback.print_exception(exc_type, exc_value, exc_traceback, file=sys.stdout)
 						self.runerrback(controller, exc_type, exc_value, exc_traceback)
 
 	def runcallback(self, controller, *args):
@@ -305,7 +305,7 @@ class PushServiceBase(Modules, ConfigFile):
 				self.push(controller, subject, body, attachments)
 
 	def runerrback(self, controller, *args):
-		print _("controller %s returned error(s)") % controller.getName()
+		log.debug( ("controller %s returned error(s)") % controller.getName() )
 		text = ""
 		for arg in args:
 			if isinstance(arg, Exception):
@@ -315,12 +315,12 @@ class PushServiceBase(Modules, ConfigFile):
 					text += str(arg) + "\n"
 			elif arg:
 				text += str(arg) + "\n"
-		print text
+		log.debug( text )
 		if config.pushservice.push_errors.value:
 			self.push(controller, _("PushService controller run() exception"), text, [])
 
 	def push(self, controller, subject, text="", attachments=[]):
-		print "[PS] push"
+		log.debug( "[PS] push" )
 		services = self.services
 		if not services:
 			# Fallback to PopUp
@@ -338,13 +338,12 @@ class PushServiceBase(Modules, ConfigFile):
 								controller.getName(),
 								subject, text, attachments )
 					except Exception, e:
-						print _("PushService Service push() exception")
+						log.debug( "PushService Service push() exception")
 						exc_type, exc_value, exc_traceback = sys.exc_info()
-						traceback.print_exception(exc_type, exc_value, exc_traceback, file=sys.stdout)
 						self.pusherrback(service, controller, exc_type, exc_value, exc_traceback)
 
 	def pushcallback(self, service, controller, *args):
-		print "[PS] pushcallback"
+		log.debug( "[PS] pushcallback" )
 		key = (service, controller)
 		if key not in self.pushcallbacks:
 			self.pushcallbacks[key] = list(args)
@@ -353,13 +352,13 @@ class PushServiceBase(Modules, ConfigFile):
 		self.pushcheckbacks(key)
 
 	def pusherrback(self, service, controller, *args):
-		print "[PS] pusherrback"
-		print _("Service %s returned error(s)") % service.getName()
+		log.debug( "[PS] pusherrback" )
+		log.debug( ("Service %s returned error(s)") % service.getName() )
 		for arg in args:
 			if isinstance(arg, Exception):
-				print str(arg.type), str(arg.value)
+				log.debug( str(arg.type), str(arg.value) )
 			elif arg:
-				print str(arg)
+				log.debug( str(arg) )
 		key = (service, controller)
 		if key not in self.pusherrbacks:
 			self.pusherrbacks[key] = list(args)
@@ -368,7 +367,7 @@ class PushServiceBase(Modules, ConfigFile):
 		self.pushcheckbacks(key)
 
 	def pushcheckbacks(self, key):
-		print "[PS] pushcheckbacks"
+		log.debug( "[PS] pushcheckbacks" )
 		callparam = self.pushcallbacks.get(key, [])
 		cntcall = len(callparam)
 		errparam = self.pusherrbacks.get(key, [])
@@ -381,8 +380,8 @@ class PushServiceBase(Modules, ConfigFile):
 			if controller:
 				# Check if no error is logged
 				if ( cnterr == 0 ):
-					print "[PS] controller.callback()"
+					log.debug( "[PS] controller.callback()" )
 					controller.callback()
 				else:
 					controller.errback()
-					print "[PS] controller.errback()"
+					log.debug( "[PS] controller.errback()" )
