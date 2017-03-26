@@ -120,7 +120,6 @@ class OPKGUpdateNotification(ControllerBase):
 						continue
 					updates += line + "\r\n"
 			except Exception, e:
-				updates += "\r\n\r\nException:\r\n" + str(e)
 				excepts += "\r\n\r\nException:\r\n" + str(e)
 		
 		if excepts:
