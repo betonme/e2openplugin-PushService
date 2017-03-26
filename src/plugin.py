@@ -32,7 +32,7 @@ from Logger import log
 
 # Constants
 NAME = "PushService"
-VERSION = "0.6"
+VERSION = "0.6.1"
 SUPPORT = "http://bit.ly/psihad"
 DONATE = "http://bit.ly/pspaypal"
 ABOUT = "\n  " + NAME + " " + VERSION + "\n\n" \

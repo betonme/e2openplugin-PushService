@@ -49,17 +49,21 @@ class ActiveTimers(ControllerBase):
 		# If empty or none is returned, nothing will be sent
 		self.timers = []
 		text = ""
-		for timer in NavigationInstance.instance.RecordTimer.timer_list + NavigationInstance.instance.RecordTimer.processed_timers:
+		for timer in NavigationInstance.instance.RecordTimer.timer_list:
 			if timer.justplay:
+				log.debug( _("ActiveTimers: Skip justplay") + str(timer.name) )
 				pass
 			
 			elif str(timer.service_ref)[0]=="-":
+				log.debug( _("ActiveTimers: Skip serviceref") + str(timer.name) )
 				pass
 			
 			elif TAG in timer.tags:
+				log.debug( _("ActiveTimers: Skip tag") + str(timer.name) )
 				pass
 			
 			elif timer.disabled:
+				log.debug( _("ActiveTimers: Skip disabled") + str(timer.name) )
 				pass
 			
 			else:
