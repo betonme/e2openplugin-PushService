@@ -22,6 +22,7 @@ from Components.config import ConfigYesNo, NoSave
 # Plugin internal
 from Plugins.Extensions.PushService.__init__ import _
 from Plugins.Extensions.PushService.ControllerBase import ControllerBase
+from Plugins.Extensions.PushService.Logger import log
 
 # Plugin specific
 import NavigationInstance
