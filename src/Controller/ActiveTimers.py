@@ -26,7 +26,7 @@ from Plugins.Extensions.PushService.Logger import log
 
 # Plugin specific
 import NavigationInstance
-from time import localtime, strftime
+from time import time, localtime, strftime
 
 
 # Constants
@@ -43,6 +43,9 @@ class ActiveTimers(ControllerBase):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
 		self.timers = []
+		
+		# Default configuration
+		self.setOption( 'add_tag', NoSave(ConfigYesNo( default = False )), _("Start update check if not done yet") )
 
 	def run(self, callback, errback):
 		# At the end a plugin has to call one of the functions: callback or errback
@@ -50,7 +53,8 @@ class ActiveTimers(ControllerBase):
 		# If empty or none is returned, nothing will be sent
 		self.timers = []
 		text = ""
-		for timer in NavigationInstance.instance.RecordTimer.timer_list:
+		now = time()
+		for timer in NavigationInstance.instance.RecordTimer.timer_list + NavigationInstance.instance.RecordTimer.processed_timers:
 			if timer.justplay:
 				log.debug( _("ActiveTimers: Skip justplay") + str(timer.name) )
 				pass
@@ -59,12 +63,16 @@ class ActiveTimers(ControllerBase):
 				log.debug( _("ActiveTimers: Skip serviceref") + str(timer.name) )
 				pass
 			
-			elif TAG in timer.tags:
+			elif self.getValue('add_tag') and TAG in timer.tags:
 				log.debug( _("ActiveTimers: Skip tag") + str(timer.name) )
 				pass
 			
 			elif timer.disabled:
 				log.debug( _("ActiveTimers: Skip disabled") + str(timer.name) )
+				pass
+			
+			elif timer.begin < now:
+				log.debug( _("ActiveTimers: Skip begin < now") + str(timer.name) )
 				pass
 			
 			else:
@@ -84,7 +92,8 @@ class ActiveTimers(ControllerBase):
 		# Called after all services succeded
 		# Set tag to avoid resending it
 		for timer in self.timers[:]:
-			timer.tags.append(TAG)
+			if self.getValue('add_tag'):
+				timer.tags.append(TAG)
 			NavigationInstance.instance.RecordTimer.saveTimer()
 			self.timers.remove(timer)
 

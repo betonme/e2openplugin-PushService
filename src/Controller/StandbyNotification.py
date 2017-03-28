@@ -24,8 +24,6 @@ from Plugins.Extensions.PushService.ControllerBase import ControllerBase
 from Plugins.Extensions.PushService.Logger import log
 
 # Plugin specific
-from time import localtime, strftime
-from enigma import eTimer
 
 
 # Constants
