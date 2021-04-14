@@ -75,7 +75,7 @@ class FreeSpace(ControllerBase):
 		self.setOption('wakehdd', NoSave(ConfigYesNo(default=False)), _("Allow HDD wake up"))
 		self.setOption('path', NoSave(ConfigText(default="/media/hdd/movie", fixed_size=False)), _("Where to check free space"))
 		self.setOption('limit', NoSave(ConfigNumber(default=100)), _("Free space limit in GB"))
-		self.setOption('listtimer',NoSave(ConfigYesNo(default=False)), _("List upcoming timer"))
+		self.setOption('listtimer', NoSave(ConfigYesNo(default=False)), _("List upcoming timer"))
 	
 	def run(self, callback, errback):
 		# At the end a plugin has to call one of the functions: callback or errback

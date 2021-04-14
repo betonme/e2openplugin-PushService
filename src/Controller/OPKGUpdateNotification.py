@@ -77,11 +77,11 @@ class OPKGUpdateNotification(ControllerBase):
 	def opkgupgradableFinished(self, retval=None):
 		
 		try:
-			log.debug("PushService retval: ",str(retval))
+			log.debug("PushService retval: ", str(retval))
 		except:
 			pass
 		try:
-			log.debug("PushService self.data: ",str(self.data))
+			log.debug("PushService self.data: ", str(self.data))
 		except:
 			pass
 		
@@ -91,7 +91,7 @@ class OPKGUpdateNotification(ControllerBase):
 		if self.data:
 			try:
 				for line in self.data.split("\n"):
-					log.debug("PushService opkg upgradable data: ",line)
+					log.debug("PushService opkg upgradable data: ", line)
 					if line.startswith("Inflating"):
 						continue
 					if line.startswith("Updated"):

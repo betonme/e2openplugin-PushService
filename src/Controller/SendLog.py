@@ -67,7 +67,7 @@ class SendLog(ControllerBase):
 					if(content_pattern == ".*"):
 						self.logfiles.append(logfile)
 					else:
-						infile = open(logfile,"r")
+						infile = open(logfile, "r")
 						for line in infile:
 							if prog.match(line):
 								self.logfiles.append(logfile)
@@ -80,7 +80,7 @@ class SendLog(ControllerBase):
 				if(content_pattern == ".*"):
 					self.logfiles.append(logfile)
 				else:
-					infile = open(logfile,"r")
+					infile = open(logfile, "r")
 					for line in infile:
 						if prog.match(line):
 							self.logfiles.append(logfile)
@@ -108,7 +108,7 @@ class SendLog(ControllerBase):
 					# Adapted from autosubmit - instead of .sent we will use .pushed
 					currfilename = str(os.path.basename(logfile))
 					newfilename = "/media/hdd/" + currfilename + ".pushed"
-					os.rename(logfile,newfilename)
+					os.rename(logfile, newfilename)
 				self.logfiles.remove(logfile)
 
 	def errback(self):
