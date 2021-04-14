@@ -45,7 +45,7 @@ class OPKGUpdateNotification(ControllerBase):
 		ControllerBase.__init__(self)
 		
 		# Default configuration
-		self.setOption( 'selfcheck', NoSave(ConfigYesNo( default = False )), _("Start update check if not done yet") )
+		self.setOption( 'selfcheck', NoSave(ConfigYesNo( default=False )), _("Start update check if not done yet") )
 		
 		self.data = ""
 		self.container = eConsoleAppContainer()

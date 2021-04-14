@@ -43,12 +43,12 @@ class SendLog(ControllerBase):
 		self.logfiles = []
 
 		# Default configuration
-		self.setOption( 'path',            NoSave(ConfigText(  default = "/media/hdd/", fixed_size = False )), _("Path to check") )
-		self.setOption( 'file_pattern',    NoSave(ConfigText(  default = "*.log", fixed_size = False )), _("Filename pattern (No RegExp)") )
-		self.setOption( 'content_pattern', NoSave(ConfigText(  default = ".*", fixed_size = False )), _("Content pattern (RegExp)") )
-		self.setOption( 'scan_subs',       NoSave(ConfigYesNo( default = False )), _("Scan subfolders") )
-		self.setOption( 'rename_logs',     NoSave(ConfigYesNo( default = False )), _("Rename log(s)") )
-		self.setOption( 'delete_logs',     NoSave(ConfigYesNo( default = False )), _("Delete log(s)") )
+		self.setOption( 'path',            NoSave(ConfigText(  default="/media/hdd/", fixed_size=False )), _("Path to check") )
+		self.setOption( 'file_pattern',    NoSave(ConfigText(  default="*.log", fixed_size=False )), _("Filename pattern (No RegExp)") )
+		self.setOption( 'content_pattern', NoSave(ConfigText(  default=".*", fixed_size=False )), _("Content pattern (RegExp)") )
+		self.setOption( 'scan_subs',       NoSave(ConfigYesNo( default=False )), _("Scan subfolders") )
+		self.setOption( 'rename_logs',     NoSave(ConfigYesNo( default=False )), _("Rename log(s)") )
+		self.setOption( 'delete_logs',     NoSave(ConfigYesNo( default=False )), _("Delete log(s)") )
 
 	def run(self, callback, errback):
 		# At the end a plugin has to call one of the functions: callback or errback

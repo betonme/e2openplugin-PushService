@@ -44,8 +44,8 @@ class ListDir(ControllerBase):
                 self.movielist= []
  
                 # Default configuration
-                self.setOption( 'path',     NoSave(ConfigText(   default = "/media/hdd/movie/", fixed_size = False )), _("Where to check") )
-		self.setOption( 'ext',     NoSave(ConfigText(   default = ".ts", fixed_size = False )), _("file extension") )
+                self.setOption( 'path',     NoSave(ConfigText(   default="/media/hdd/movie/", fixed_size=False )), _("Where to check") )
+		self.setOption( 'ext',     NoSave(ConfigText(   default=".ts", fixed_size=False )), _("file extension") )
  
  
         def run(self, callback, errback):

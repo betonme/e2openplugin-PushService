@@ -76,7 +76,7 @@ class PushService(PushServiceBase):
 		self.end()
 		self.state = PSFIRST
 
-	def next(self, state = None):
+	def next(self, state=None):
 		if state:
 			self.state = state
 		log.debug( "PushService next", self.state )

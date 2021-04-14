@@ -45,7 +45,7 @@ class ActiveTimers(ControllerBase):
 		self.timers = []
 		
 		# Default configuration
-		self.setOption( 'add_tag', NoSave(ConfigYesNo( default = False )), _("Start update check if not done yet") )
+		self.setOption( 'add_tag', NoSave(ConfigYesNo( default=False )), _("Start update check if not done yet") )
 
 	def run(self, callback, errback):
 		# At the end a plugin has to call one of the functions: callback or errback
