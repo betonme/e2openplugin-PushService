@@ -58,7 +58,7 @@ class BrokenRecords(ControllerBase):
 						broken_records.append(record_path)
 				
 		if broken_records:
-			callback( SUBJECT, BODY % "\n\n" + "\n".join( broken_records ) )
+			callback(SUBJECT, BODY % "\n\n" + "\n".join(broken_records))
 		else:
 			callback()
 

@@ -35,7 +35,7 @@ class ModuleBase(object):
 		# Is called on instance creation
 		
 		# Default configuration
-		self.enable = NoSave(ConfigYesNo( default=False ))
+		self.enable = NoSave(ConfigYesNo(default=False))
 		
 		self.options = OrderedDict()
 		
@@ -77,7 +77,7 @@ class ModuleBase(object):
 			return None
 
 	def setOption(self, key, option, description):
-		self.options[key] = ( option, description )
+		self.options[key] = (option, description)
 
 	def setOptions(self, options):
 		# Parse a list of key-value string tuples
@@ -93,8 +93,8 @@ class ModuleBase(object):
 				elif type(default) is int:
 					self.setValue(key, int(value))
 			except:
-				log.debug( ("PushService Module %s:\n") % ( self.getName() ) )
-				log.debug( ("Skipping config option:") + str(key) + " " + str(value) )
+				log.debug(("PushService Module %s:\n") % (self.getName()))
+				log.debug(("Skipping config option:") + str(key) + " " + str(value))
 				continue
 
 	def getUniqueID(self):
@@ -113,10 +113,10 @@ class ModuleBase(object):
 		return str(self.enable.value)
 
 	def getStringOptions(self):
-		return [ ( str(key), str(option.value), str(description) ) for ( key, ( option, description ) ) in self.options.items() ]
+		return [(str(key), str(option.value), str(description)) for (key, (option, description)) in self.options.items()]
 
 	def getConfigOptions(self):
-		return [ ( key, option, description) for ( key, ( option, description ) ) in self.options.items() ]
+		return [(key, option, description) for (key, (option, description)) in self.options.items()]
 
 
 	################################################

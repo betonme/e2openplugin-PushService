@@ -45,7 +45,7 @@ class ClientParser(OptionParser):
 		values, args = OptionParser.parse_args(self, args, values)
 
 		if values.message is None:
-			log.debug( 'Enter a message followed by Ctrl-D' )
+			log.debug('Enter a message followed by Ctrl-D')
 			try:
 				message = sys.stdin.read()
 			except KeyboardInterrupt:

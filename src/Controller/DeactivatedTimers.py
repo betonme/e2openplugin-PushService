@@ -43,8 +43,8 @@ class DeactivatedTimers(ControllerBase):
 		self.timers = []
 		
 		# Default configuration
-		self.setOption( 'remove_timer', NoSave(ConfigYesNo( default=False )), _("Remove deactivated timer(s)") )
-		self.setOption( 'list_similar', NoSave(ConfigYesNo( default=False )), _("List similar timer(s)") )
+		self.setOption('remove_timer', NoSave(ConfigYesNo(default=False)), _("Remove deactivated timer(s)"))
+		self.setOption('list_similar', NoSave(ConfigYesNo(default=False)), _("List similar timer(s)"))
 
 	def run(self, callback, errback):
 		# At the end a plugin has to call one of the functions: callback or errback
@@ -92,10 +92,10 @@ class DeactivatedTimers(ControllerBase):
 					
 					text += "\r\n"
 				
-				self.timers.append( timer )
+				self.timers.append(timer)
 			
 		if self.timers and text:
-			callback( SUBJECT, BODY % text )
+			callback(SUBJECT, BODY % text)
 		else:
 			callback()
 
@@ -116,7 +116,7 @@ class DeactivatedTimers(ControllerBase):
 		# Set tag to avoid resending it
 		for timer in self.timers:
 			if TAG not in timer.tags:
-				log.debug( "[PS] timer append tag" )
+				log.debug("[PS] timer append tag")
 				timer.tags.append(TAG)
 		NavigationInstance.instance.RecordTimer.saveTimer()
 		self.timers = []

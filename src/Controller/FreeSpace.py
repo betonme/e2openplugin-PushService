@@ -72,10 +72,10 @@ class FreeSpace(ControllerBase):
 		ControllerBase.__init__(self)
 		
 		# Default configuration
-		self.setOption( 'wakehdd',  NoSave(ConfigYesNo(  default=False )),                                  _("Allow HDD wake up") )
-		self.setOption( 'path',     NoSave(ConfigText(   default="/media/hdd/movie", fixed_size=False )), _("Where to check free space") )
-		self.setOption( 'limit',    NoSave(ConfigNumber( default=100 )),                                    _("Free space limit in GB") )
-		self.setOption( 'listtimer',NoSave(ConfigYesNo(  default=False )),                                  _("List upcoming timer") )
+		self.setOption('wakehdd',  NoSave(ConfigYesNo(default=False)),                                  _("Allow HDD wake up"))
+		self.setOption('path',     NoSave(ConfigText(default="/media/hdd/movie", fixed_size=False)), _("Where to check free space"))
+		self.setOption('limit',    NoSave(ConfigNumber(default=100)),                                    _("Free space limit in GB"))
+		self.setOption('listtimer',NoSave(ConfigYesNo(default=False)),                                  _("List upcoming timer"))
 	
 	def run(self, callback, errback):
 		# At the end a plugin has to call one of the functions: callback or errback
@@ -88,19 +88,19 @@ class FreeSpace(ControllerBase):
 
 			# User specified to avoid HDD wakeup if it is sleeping
 			from Components.Harddisk import harddiskmanager
-			dev = getDevicebyMountpoint( harddiskmanager, mountpoint(path) )
+			dev = getDevicebyMountpoint(harddiskmanager, mountpoint(path))
 			if dev is not None:
-				hdd = getHDD( harddiskmanager, dev )
+				hdd = getHDD(harddiskmanager, dev)
 				if hdd is not None:
 					if hdd.isSleeping():
 						# Don't wake up HDD
-						log.debug( _("[FreeSpace] HDD is idle: ") + str(path) )
+						log.debug(_("[FreeSpace] HDD is idle: ") + str(path))
 						callback()
 		
 		# Check free space on path
-		if os.path.exists( path ):
-			stat = os.statvfs( path )
-			free = ( stat.f_bavail if stat.f_bavail!=0 else stat.f_bfree ) * stat.f_bsize / 1024 / 1024 # MB
+		if os.path.exists(path):
+			stat = os.statvfs(path)
+			free = (stat.f_bavail if stat.f_bavail!=0 else stat.f_bfree) * stat.f_bsize / 1024 / 1024 # MB
 			if limit > (free/1024): #GB
 				if free >= 10*1024:	#MB
 					free = "%d GB" %(free/1024)
@@ -119,7 +119,7 @@ class FreeSpace(ControllerBase):
 						if not t.disabled and not t.justplay and now < t.begin and t.end < next_day:
 							text += "\t" + timerToString(t)  + "\r\n"
 					
-				callback( SUBJECT, BODY % (path, limit, free) + text )
+				callback(SUBJECT, BODY % (path, limit, free) + text)
 			else:
 				# There is enough free space
 				callback()

@@ -45,20 +45,20 @@ class IPKGUpdateNotification(ControllerBase):
 		ControllerBase.__init__(self)
 		
 		# Default configuration
-		self.setOption( 'selfcheck', NoSave(ConfigYesNo( default=False )), _("Start update check if not done yet") )
+		self.setOption('selfcheck', NoSave(ConfigYesNo(default=False)), _("Start update check if not done yet"))
 
 	def run(self, callback, errback):
 		# At the end a plugin has to call one of the functions: callback or errback
 		# Callback should return with at least one of the parameter: Header, Body, Attachment
 		# If empty or none is returned, nothing will be sent
-		if iSoftwareTools.lastDownloadDate is not None and iSoftwareTools.lastDownloadDate > ( time() - (24*60*60) ):
+		if iSoftwareTools.lastDownloadDate is not None and iSoftwareTools.lastDownloadDate > (time() - (24*60*60)):
 			# Last refresh was within one day
 			return self.buildList(callback, errback)
 		else:
-			log.debug( "IPKGUpdateNotification run else" )
+			log.debug("IPKGUpdateNotification run else")
 			if self.getValue('selfcheck'):
 				# Refresh package list
-				iSoftwareTools.startSoftwareTools( boundFunction(self.getUpdateInfosCB, callback, errback) )
+				iSoftwareTools.startSoftwareTools(boundFunction(self.getUpdateInfosCB, callback, errback))
 				return
 		callback()
 
@@ -67,28 +67,28 @@ class IPKGUpdateNotification(ControllerBase):
 			if retval is True:
 				if iSoftwareTools.available_updates is not 0:
 					# _("There are at least ") + str(iSoftwareTools.available_updates) + _(" updates available.")
-					log.debug( "Updates available." )
+					log.debug("Updates available.")
 					return self.buildList(callback, errback)
 				else:
 					# _("There are no updates available.")
-					log.debug( "There are no updates available." )
+					log.debug("There are no updates available.")
 					return callback()
 			elif retval is False:
 				if iSoftwareTools.lastDownloadDate is None:
 					if iSoftwareTools.NetworkConnectionAvailable:
 						# _("Updatefeed not available.")
-						log.debug( "Updatefeed not available." )
+						log.debug("Updatefeed not available.")
 						return errback(_("Updatefeed not available."))
 					else:
 						# _("No network connection available.")
-						log.debug( "No network connection available." )
+						log.debug("No network connection available.")
 						return errback(_("No network connection available."))
 				else:
-					log.debug( "IPKGUpdateNotification getUpdates" )
+					log.debug("IPKGUpdateNotification getUpdates")
 					# Call update
 					iSoftwareTools.lastDownloadDate = time()
 					iSoftwareTools.list_updating = True
-					iSoftwareTools.getUpdates( boundFunction(self.getUpdateInfosCB, callback, errback) )
+					iSoftwareTools.getUpdates(boundFunction(self.getUpdateInfosCB, callback, errback))
 					return
 		callback()
 
@@ -104,11 +104,11 @@ class IPKGUpdateNotification(ControllerBase):
 				if p == packagename:
 					updversion = v
 					break
-			log.debug( "PushService: " + packagename + " :\t" + instversion + " :\t" + updversion )
+			log.debug("PushService: " + packagename + " :\t" + instversion + " :\t" + updversion)
 			if instversion != updversion:
 				updates += packagename + " :\t" + instversion + " :\t" + updversion + "\n"
 		if updates:
-			callback( SUBJECT, BODY % (updates) )
+			callback(SUBJECT, BODY % (updates))
 		else:
 			callback()
 

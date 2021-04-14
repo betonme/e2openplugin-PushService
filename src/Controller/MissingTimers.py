@@ -46,7 +46,7 @@ class MissingTimers(ControllerBase):
 		# Callback should return with at least one of the parameter: Header, Body, Attachment
 		# If empty or none is returned, nothing will be sent
 		timers = 0
-		tomorrow_begin = mktime( ( date.today() + timedelta(days=1) ).timetuple() )
+		tomorrow_begin = mktime((date.today() + timedelta(days=1)).timetuple())
 		tomorrow_end   = tomorrow_begin + 24*60*60
 		
 		for timer in NavigationInstance.instance.RecordTimer.timer_list:
@@ -57,7 +57,7 @@ class MissingTimers(ControllerBase):
 					break
 				
 		if timers == 0:
-			callback( SUBJECT, BODY % strftime(_("%Y.%m.%d"), localtime(tomorrow_begin)))
+			callback(SUBJECT, BODY % strftime(_("%Y.%m.%d"), localtime(tomorrow_begin)))
 		else:
 			callback()
 

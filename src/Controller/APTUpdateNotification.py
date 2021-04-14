@@ -45,7 +45,7 @@ class APTUpdateNotification(ControllerBase):
 		ControllerBase.__init__(self)
 		
 		# Default configuration
-		self.setOption( 'selfcheck', NoSave(ConfigYesNo( default=False )), _("Start update check if not done yet") )
+		self.setOption('selfcheck', NoSave(ConfigYesNo(default=False)), _("Start update check if not done yet"))
 		
 		self.data = ""
 		self.container = eConsoleAppContainer()
@@ -77,11 +77,11 @@ class APTUpdateNotification(ControllerBase):
 	def aptupgradableFinished(self, retval=None):
 		
 		try:
-			log.debug( "PushService retval: ",str(retval) )
+			log.debug("PushService retval: ",str(retval))
 		except:
 			pass
 		try:
-			log.debug( "PushService self.data: ",str(self.data) )
+			log.debug("PushService self.data: ",str(self.data))
 		except:
 			pass
 		
@@ -91,7 +91,7 @@ class APTUpdateNotification(ControllerBase):
 		if self.data:
 			try:
 				for line in self.data.split("\n"):
-					log.debug( "PushService opkg upgradable data: ",line )
+					log.debug("PushService opkg upgradable data: ",line)
 					if line.startswith("Inst"):
 						updates += line[5:] + "\r\n"
 						continue
@@ -99,7 +99,7 @@ class APTUpdateNotification(ControllerBase):
 				excepts += "\r\n\r\nException:\r\n" + str(e)
 		
 		if excepts:
-			log.exception( excepts )
+			log.exception(excepts)
 		
 		if updates:
 			#callback( SUBJECT, BODY % (updates) )

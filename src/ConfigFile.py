@@ -55,7 +55,7 @@ class ConfigFile(object):
 		
 		# Abort if no config found
 		if not os.path.exists(path):
-			log.debug( "PushService No configuration file present" )
+			log.debug("PushService No configuration file present")
 			return None
 		
 		# Parse if mtime differs from whats saved
@@ -68,7 +68,7 @@ class ConfigFile(object):
 		try:
 			etree = parse(path).getroot()
 		except Exception, e:
-			log.exception( ("PushService Exception in readXML: ") + str(e) )
+			log.exception(("PushService Exception in readXML: ") + str(e))
 			etree = None
 			mtime = -1
 		
@@ -89,12 +89,12 @@ class ConfigFile(object):
 			if data:
 				f.writelines(data)
 		except Exception, e:
-			log.exception( ("PushService Exception in writeXML: ") + str(e) )
+			log.exception(("PushService Exception in writeXML: ") + str(e))
 		finally:
 			if f is not None:
 				f.close()
 		
 		# Save time and cache file content
-		self.mtime = os.path.getmtime( path )
+		self.mtime = os.path.getmtime(path)
 		self.cache = etree
 
