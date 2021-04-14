@@ -37,16 +37,16 @@ BODY = _("There are updates available:\n%s")
 
 
 class APTUpdateNotification(ControllerBase):
-	
+
 	ForceSingleInstance = True
-	
+
 	def __init__(self):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
-		
+
 		# Default configuration
 		self.setOption('selfcheck', NoSave(ConfigYesNo(default=False)), _("Start update check if not done yet"))
-		
+
 		self.data = ""
 		self.container = eConsoleAppContainer()
 		try:
@@ -75,7 +75,7 @@ class APTUpdateNotification(ControllerBase):
 			self.container.execute("apt-get --just-print upgrade")
 
 	def aptupgradableFinished(self, retval=None):
-		
+
 		try:
 			log.debug("PushService retval: ", str(retval))
 		except:
@@ -84,10 +84,10 @@ class APTUpdateNotification(ControllerBase):
 			log.debug("PushService self.data: ", str(self.data))
 		except:
 			pass
-		
+
 		updates = ""
 		excepts = ""
-		
+
 		if self.data:
 			try:
 				for line in self.data.split("\n"):
@@ -97,16 +97,15 @@ class APTUpdateNotification(ControllerBase):
 						continue
 			except Exception, e:
 				excepts += "\r\n\r\nException:\r\n" + str(e)
-		
+
 		if excepts:
 			log.exception(excepts)
-		
+
 		if updates:
 			#callback( SUBJECT, BODY % (updates) )
-			
+
 			#TODO Problem test run won't get the message
 			# Push mail
 			from Plugins.Extensions.PushService.plugin import gPushService
 			if gPushService:
 				gPushService.push(self, SUBJECT, BODY % (updates))
-

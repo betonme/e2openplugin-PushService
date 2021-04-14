@@ -34,19 +34,19 @@ SUBJECT = _("Record Notification")
 
 
 class RecordNotification(ControllerBase):
-	
+
 	ForceSingleInstance = True
-	
+
 	def __init__(self):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
-		
+
 		self.forceBindRecordTimer = eTimer()
 		try:
 			self.forceBindRecordTimer_conn = self.forceBindRecordTimer.timeout.connect(self.begin)
  		except:
 			self.forceBindRecordTimer.callback.append(self.begin)
-		
+
 		# Default configuration
 		self.setOption('send_on_start', NoSave(ConfigYesNo(default=False)), _("Send notification on record start"))
 		self.setOption('send_on_end', NoSave(ConfigYesNo(default=True)), _("Send notification on record end"))
@@ -55,7 +55,7 @@ class RecordNotification(ControllerBase):
 
 	def begin(self):
 		# Is called after starting PushService
-		
+
 		if self.getValue('send_on_start') or self.getValue('send_on_end'):
 			if NavigationInstance.instance:
 				if self.onRecordEvent not in NavigationInstance.instance.RecordTimer.on_state_change:
@@ -85,16 +85,16 @@ class RecordNotification(ControllerBase):
 	def onRecordEvent(self, timer):
 		text = ""
 		include_description = self.getValue('include_description')
-		
+
 		if timer.justplay:
 			pass
-		
+
 		elif str(timer.service_ref)[0] == "-":
 			pass
-		
+
 		elif timer.state == timer.StatePrepared:
 			pass
-		
+
 		elif timer.state == timer.StateRunning:
 			timer.ps_running = True
 			if self.getValue('send_on_start'):
@@ -106,7 +106,7 @@ class RecordNotification(ControllerBase):
 				if include_description:
 					text += "\n\n" + str(timer.description)
 				del timer
-			
+
 		# Finished repeating timer will report the state StateEnded+1 or StateWaiting
 		elif timer.state == timer.StateEnded or timer.repeated and timer.state == timer.StateWaiting:
 			if hasattr(timer, "ps_running") and timer.ps_running:
@@ -120,11 +120,10 @@ class RecordNotification(ControllerBase):
 					if include_description:
 						text += "\n\n" + str(timer.description)
 					del timer
-		
+
 		if text:
 			#TODO Problem test run won't get the message
 			# Push mail
 			from Plugins.Extensions.PushService.plugin import gPushService
 			if gPushService:
 				gPushService.push(self, SUBJECT, text)
-

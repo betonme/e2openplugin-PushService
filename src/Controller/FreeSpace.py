@@ -44,7 +44,7 @@ def mountpoint(path):
 	if os.path.ismount(path) or len(path) == 0:
 		return path
 	return mountpoint(os.path.dirname(path))
-			
+
 
 def getDevicebyMountpoint(hdm, mountpoint):
 	for x in hdm.partitions[:]:
@@ -69,26 +69,26 @@ def timerToString(timer):
 
 
 class FreeSpace(ControllerBase):
-	
+
 	ForceSingleInstance = False
-	
+
 	def __init__(self):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
-		
+
 		# Default configuration
 		self.setOption('wakehdd', NoSave(ConfigYesNo(default=False)), _("Allow HDD wake up"))
 		self.setOption('path', NoSave(ConfigText(default="/media/hdd/movie", fixed_size=False)), _("Where to check free space"))
 		self.setOption('limit', NoSave(ConfigNumber(default=100)), _("Free space limit in GB"))
 		self.setOption('listtimer', NoSave(ConfigYesNo(default=False)), _("List upcoming timer"))
-	
+
 	def run(self, callback, errback):
 		# At the end a plugin has to call one of the functions: callback or errback
 		# Callback should return with at least one of the parameter: Header, Body, Attachment
 		# If empty or none is returned, nothing will be sent
 		path = self.getValue('path')
 		limit = self.getValue('limit')
-		
+
 		if not self.getValue('wakehdd'):
 
 			# User specified to avoid HDD wakeup if it is sleeping
@@ -101,7 +101,7 @@ class FreeSpace(ControllerBase):
 						# Don't wake up HDD
 						log.debug(_("[FreeSpace] HDD is idle: ") + str(path))
 						callback()
-		
+
 		# Check free space on path
 		if os.path.exists(path):
 			stat = os.statvfs(path)
@@ -114,8 +114,8 @@ class FreeSpace(ControllerBase):
 				# Not enough free space
 				text = ""
 				if self.getValue('listtimer'):
-					text = "\r\n\r\n" 
-					text += _("Next timer:") 
+					text = "\r\n\r\n"
+					text += _("Next timer:")
 					text += "\r\n"
 					import NavigationInstance
 					now = time()
@@ -123,7 +123,7 @@ class FreeSpace(ControllerBase):
 					for t in NavigationInstance.instance.RecordTimer.timer_list + NavigationInstance.instance.RecordTimer.processed_timers:
 						if not t.disabled and not t.justplay and now < t.begin and t.end < next_day:
 							text += "\t" + timerToString(t) + "\r\n"
-					
+
 				callback(SUBJECT, BODY % (path, limit, free) + text)
 			else:
 				# There is enough free space

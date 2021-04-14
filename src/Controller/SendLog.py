@@ -34,9 +34,9 @@ BODY = _("Log(s) are attached")
 
 
 class SendLog(ControllerBase):
-	
+
 	ForceSingleInstance = True
-	
+
 	def __init__(self):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
@@ -86,7 +86,7 @@ class SendLog(ControllerBase):
 							self.logfiles.append(logfile)
 							break
 					infile.close()
-		
+
 		if self.logfiles:
 			callback(SUBJECT, BODY, self.logfiles)
 		else:

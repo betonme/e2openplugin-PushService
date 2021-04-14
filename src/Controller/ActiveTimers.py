@@ -36,14 +36,14 @@ TAG = _("ActiveTimerPushed")
 
 
 class ActiveTimers(ControllerBase):
-	
+
 	ForceSingleInstance = True
-	
+
 	def __init__(self):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
 		self.timers = []
-		
+
 		# Default configuration
 		self.setOption('add_tag', NoSave(ConfigYesNo(default=False)), _("Start update check if not done yet"))
 
@@ -58,23 +58,23 @@ class ActiveTimers(ControllerBase):
 			if timer.justplay:
 				log.debug(_("ActiveTimers: Skip justplay") + str(timer.name))
 				pass
-			
+
 			elif str(timer.service_ref)[0] == "-":
 				log.debug(_("ActiveTimers: Skip serviceref") + str(timer.name))
 				pass
-			
+
 			elif self.getValue('add_tag') and TAG in timer.tags:
 				log.debug(_("ActiveTimers: Skip tag") + str(timer.name))
 				pass
-			
+
 			elif timer.disabled:
 				log.debug(_("ActiveTimers: Skip disabled") + str(timer.name))
 				pass
-			
+
 			elif timer.begin < now:
 				log.debug(_("ActiveTimers: Skip begin < now") + str(timer.name))
 				pass
-			
+
 			else:
 				text += str(timer.name) + "    " \
 							+ strftime(_("%Y.%m.%d %H:%M"), localtime(timer.begin)) + " - " \

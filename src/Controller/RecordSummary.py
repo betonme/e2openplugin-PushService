@@ -35,14 +35,14 @@ TAG = _("FinishedTimerPushed")
 
 
 class RecordSummary(ControllerBase):
-	
+
 	ForceSingleInstance = True
-	
+
 	def __init__(self):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
 		self.timers = []
-		
+
 		# Default configuration
 		self.setOption('remove_timer', NoSave(ConfigYesNo(default=False)), _("Remove finished timer(s)"))
 		self.setOption('include_description', NoSave(ConfigYesNo(default=False)), _("Include timer description"))
@@ -56,16 +56,16 @@ class RecordSummary(ControllerBase):
 		for timer in NavigationInstance.instance.RecordTimer.processed_timers:
 			if timer.justplay:
 				pass
-			
+
 			elif str(timer.service_ref)[0] == "-":
 				pass
-			
+
 			elif TAG in timer.tags:
 				pass
-			
+
 			elif timer.disabled:
 				pass
-			
+
 			else:
 				text += str(timer.name) + "\t" \
 							+ strftime(_("%Y.%m.%d %H:%M"), localtime(timer.begin)) + " - " \

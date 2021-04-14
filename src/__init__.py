@@ -27,9 +27,9 @@ config.pushservice.popups_success_timeout = ConfigSelectionNumber(-1, 20, 1, def
 config.pushservice.popups_warning_timeout = ConfigSelectionNumber(-1, 20, 1, default=-1)
 config.pushservice.popups_error_timeout = ConfigSelectionNumber(-1, 20, 1, default=-1)
 
-config.pushservice.log_shell = ConfigEnableDisable(default=False) 
-config.pushservice.log_write = ConfigEnableDisable(default=False) 
-config.pushservice.log_file = ConfigText(default="/tmp/pushservice.log", fixed_size=False) 
+config.pushservice.log_shell = ConfigEnableDisable(default=False)
+config.pushservice.log_write = ConfigEnableDisable(default=False)
+config.pushservice.log_file = ConfigText(default="/tmp/pushservice.log", fixed_size=False)
 
 
 def localeInit():
@@ -43,7 +43,7 @@ def _(txt):
 		t = gettext.dgettext("PushService", txt)
 		if t == txt:
 			t = gettext.gettext(txt)
-		return t 
+		return t
 	else:
 		return ""
 
