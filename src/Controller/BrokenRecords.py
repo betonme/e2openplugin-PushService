@@ -30,7 +30,7 @@ import fnmatch
 
 # Constants
 SUBJECT = _("Broken records")
-BODY    = _("There are broken records - %s")
+BODY = _("There are broken records - %s")
 
 
 class BrokenRecords(ControllerBase):
@@ -46,7 +46,7 @@ class BrokenRecords(ControllerBase):
 		# Callback should return with at least one of the parameter: Header, Body, Attachment
 		# If empty or none is returned, nothing will be sent
 		yesterday_end = time()
-		yesterday_begin = yesterday_end - 24*60*60
+		yesterday_begin = yesterday_end - 24 * 60 * 60
 		
 		broken_records = []
 		for root, dirnames, filenames in os.walk(config.usage.default_path.value):

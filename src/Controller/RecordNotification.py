@@ -48,9 +48,9 @@ class RecordNotification(ControllerBase):
 			self.forceBindRecordTimer.callback.append(self.begin)
 		
 		# Default configuration
-		self.setOption('send_on_start',       NoSave(ConfigYesNo(default=False)),  _("Send notification on record start"))
-		self.setOption('send_on_end',	       NoSave(ConfigYesNo(default=True)),   _("Send notification on record end"))
-		self.setOption('include_description', NoSave(ConfigYesNo(default=False)),  _("Include timer description"))
+		self.setOption('send_on_start', NoSave(ConfigYesNo(default=False)), _("Send notification on record start"))
+		self.setOption('send_on_end', NoSave(ConfigYesNo(default=True)), _("Send notification on record end"))
+		self.setOption('include_description', NoSave(ConfigYesNo(default=False)), _("Include timer description"))
 		#TODO option to send free space
 
 	def begin(self):
@@ -89,7 +89,7 @@ class RecordNotification(ControllerBase):
 		if timer.justplay:
 			pass
 		
-		elif str(timer.service_ref)[0]=="-":
+		elif str(timer.service_ref)[0] == "-":
 			pass
 		
 		elif timer.state == timer.StatePrepared:

@@ -30,8 +30,8 @@ from time import localtime, strftime
 
 # Constants
 SUBJECT = _("Record Summary")
-BODY    = _("Finished record list:\n%s")
-TAG     = _("FinishedTimerPushed")
+BODY = _("Finished record list:\n%s")
+TAG = _("FinishedTimerPushed")
 
 
 class RecordSummary(ControllerBase):
@@ -44,7 +44,7 @@ class RecordSummary(ControllerBase):
 		self.timers = []
 		
 		# Default configuration
-		self.setOption('remove_timer',        NoSave(ConfigYesNo(default=False)), _("Remove finished timer(s)"))
+		self.setOption('remove_timer', NoSave(ConfigYesNo(default=False)), _("Remove finished timer(s)"))
 		self.setOption('include_description', NoSave(ConfigYesNo(default=False)), _("Include timer description"))
 
 	def run(self, callback, errback):
@@ -57,7 +57,7 @@ class RecordSummary(ControllerBase):
 			if timer.justplay:
 				pass
 			
-			elif str(timer.service_ref)[0]=="-":
+			elif str(timer.service_ref)[0] == "-":
 				pass
 			
 			elif TAG in timer.tags:

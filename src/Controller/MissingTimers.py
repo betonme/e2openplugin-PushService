@@ -30,7 +30,7 @@ from datetime import date, timedelta
 
 # Constants
 SUBJECT = _("Missing timer")
-BODY    = _("There are no timer for tomorrow - %s")
+BODY = _("There are no timer for tomorrow - %s")
 
 
 class MissingTimers(ControllerBase):
@@ -47,10 +47,10 @@ class MissingTimers(ControllerBase):
 		# If empty or none is returned, nothing will be sent
 		timers = 0
 		tomorrow_begin = mktime((date.today() + timedelta(days=1)).timetuple())
-		tomorrow_end   = tomorrow_begin + 24*60*60
+		tomorrow_end = tomorrow_begin + 24 * 60 * 60
 		
 		for timer in NavigationInstance.instance.RecordTimer.timer_list:
-			if not timer.disabled and str(timer.service_ref)[0]!="-":
+			if not timer.disabled and str(timer.service_ref)[0] != "-":
 				timer_begin = timer.begin
 				if tomorrow_begin <= timer_begin <= tomorrow_end:
 					timers += 1

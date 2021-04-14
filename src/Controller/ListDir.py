@@ -41,11 +41,11 @@ class ListDir(ControllerBase):
         def __init__(self):
                 # Is called on instance creation
                 ControllerBase.__init__(self)
-                self.movielist= []
+                self.movielist = []
  
                 # Default configuration
-                self.setOption('path',     NoSave(ConfigText(default="/media/hdd/movie/", fixed_size=False)), _("Where to check"))
-		self.setOption('ext',     NoSave(ConfigText(default=".ts", fixed_size=False)), _("file extension"))
+                self.setOption('path', NoSave(ConfigText(default="/media/hdd/movie/", fixed_size=False)), _("Where to check"))
+		self.setOption('ext', NoSave(ConfigText(default=".ts", fixed_size=False)), _("file extension"))
  
  
         def run(self, callback, errback):

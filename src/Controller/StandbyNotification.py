@@ -39,10 +39,10 @@ class StandbyNotification(ControllerBase):
 		ControllerBase.__init__(self)
 		
 		# Default configuration
-		self.setOption('send_after_bootup',    NoSave(ConfigYesNo(default=False)), _("Send notification after bootup"))
+		self.setOption('send_after_bootup', NoSave(ConfigYesNo(default=False)), _("Send notification after bootup"))
 		self.setOption('send_before_shutdown', NoSave(ConfigYesNo(default=False)), _("Send notification before shutdown"))
-		self.setOption('send_before_standby',  NoSave(ConfigYesNo(default=True)),  _("Send notification before standby"))
-		self.setOption('send_after_standby',   NoSave(ConfigYesNo(default=True)),  _("Send notification after standby"))
+		self.setOption('send_before_standby', NoSave(ConfigYesNo(default=True)), _("Send notification before standby"))
+		self.setOption('send_after_standby', NoSave(ConfigYesNo(default=True)), _("Send notification after standby"))
 		
 	def leaveStandby(self, dummy=None):
 		#log.debug( "leave standby" )

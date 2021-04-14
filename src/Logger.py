@@ -110,7 +110,7 @@ class Logger(object):
 					strargs,
 					MessageBox.TYPE_WARNING,
 					int(config.pushservice.popups_warning_timeout.value),
-					'PS_PopUp_ID_Warning_'+strargs
+					'PS_PopUp_ID_Warning_' + strargs
 				)
 
 	def error(self, *args):
@@ -128,7 +128,7 @@ class Logger(object):
 					strargs,
 					MessageBox.TYPE_ERROR,
 					int(config.pushservice.popups_error_timeout.value),
-					'PS_PopUp_ID_Error_'+strargs
+					'PS_PopUp_ID_Error_' + strargs
 				)
 		
 	def exception(self, *args):
@@ -146,7 +146,7 @@ class Logger(object):
 					strargs,
 					MessageBox.TYPE_ERROR,
 					int(config.pushservice.popups_error_timeout.value),
-					'PS_PopUp_ID_Exception_'+strargs
+					'PS_PopUp_ID_Exception_' + strargs
 				)
 		
 		import os

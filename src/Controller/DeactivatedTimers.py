@@ -29,8 +29,8 @@ from time import localtime, strftime
 
 # Constants
 SUBJECT = _("Found deactivated timer(s)")
-BODY    = _("Deactivated timer list:\n%s")
-TAG     = _("DeactivatedTimerPushed")
+BODY = _("Deactivated timer list:\n%s")
+TAG = _("DeactivatedTimerPushed")
 
 
 class DeactivatedTimers(ControllerBase):
@@ -67,7 +67,7 @@ class DeactivatedTimers(ControllerBase):
 			if timer.justplay:
 				pass
 			
-			elif str(timer.service_ref)[0]=="-":
+			elif str(timer.service_ref)[0] == "-":
 				pass
 			
 			elif TAG in timer.tags:
@@ -88,7 +88,7 @@ class DeactivatedTimers(ControllerBase):
 					
 					for t in NavigationInstance.instance.RecordTimer.timer_list + NavigationInstance.instance.RecordTimer.processed_timers:
 						if not t.disabled and not t.justplay and t.name == timer.name and t.eit != timer.eit:
-							text += "\t" + timerToString(t)  + "\r\n"
+							text += "\t" + timerToString(t) + "\r\n"
 					
 					text += "\r\n"
 				

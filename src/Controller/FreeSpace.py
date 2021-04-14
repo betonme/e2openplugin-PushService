@@ -31,7 +31,7 @@ from time import localtime, strftime, time
 
 # Constants
 SUBJECT = _("Free space warning")
-BODY    = _("Free disk space limit has been reached:\n") \
+BODY = _("Free disk space limit has been reached:\n") \
 				+ _("Path:  %s\n") \
 				+ _("Limit: %d GB\n") \
 				+ _("Left:  %s")
@@ -39,7 +39,7 @@ BODY    = _("Free disk space limit has been reached:\n") \
 #Adapted from: from Components.Harddisk import findMountPoint
 def mountpoint(path):
 	path = os.path.realpath(path)
-	if os.path.ismount(path) or len(path)==0:
+	if os.path.ismount(path) or len(path) == 0:
 		return path
 	return mountpoint(os.path.dirname(path))
 			
@@ -72,10 +72,10 @@ class FreeSpace(ControllerBase):
 		ControllerBase.__init__(self)
 		
 		# Default configuration
-		self.setOption('wakehdd',  NoSave(ConfigYesNo(default=False)),                                  _("Allow HDD wake up"))
-		self.setOption('path',     NoSave(ConfigText(default="/media/hdd/movie", fixed_size=False)), _("Where to check free space"))
-		self.setOption('limit',    NoSave(ConfigNumber(default=100)),                                    _("Free space limit in GB"))
-		self.setOption('listtimer',NoSave(ConfigYesNo(default=False)),                                  _("List upcoming timer"))
+		self.setOption('wakehdd', NoSave(ConfigYesNo(default=False)), _("Allow HDD wake up"))
+		self.setOption('path', NoSave(ConfigText(default="/media/hdd/movie", fixed_size=False)), _("Where to check free space"))
+		self.setOption('limit', NoSave(ConfigNumber(default=100)), _("Free space limit in GB"))
+		self.setOption('listtimer',NoSave(ConfigYesNo(default=False)), _("List upcoming timer"))
 	
 	def run(self, callback, errback):
 		# At the end a plugin has to call one of the functions: callback or errback
@@ -100,12 +100,12 @@ class FreeSpace(ControllerBase):
 		# Check free space on path
 		if os.path.exists(path):
 			stat = os.statvfs(path)
-			free = (stat.f_bavail if stat.f_bavail!=0 else stat.f_bfree) * stat.f_bsize / 1024 / 1024 # MB
-			if limit > (free/1024): #GB
-				if free >= 10*1024:	#MB
-					free = "%d GB" %(free/1024)
+			free = (stat.f_bavail if stat.f_bavail != 0 else stat.f_bfree) * stat.f_bsize / 1024 / 1024 # MB
+			if limit > (free / 1024): #GB
+				if free >= 10 * 1024:	#MB
+					free = "%d GB" % (free / 1024)
 				else:
-					free = "%d MB" %(free)
+					free = "%d MB" % (free)
 				# Not enough free space
 				text = ""
 				if self.getValue('listtimer'):
@@ -117,7 +117,7 @@ class FreeSpace(ControllerBase):
 					next_day = now + 86400 # Add one day
 					for t in NavigationInstance.instance.RecordTimer.timer_list + NavigationInstance.instance.RecordTimer.processed_timers:
 						if not t.disabled and not t.justplay and now < t.begin and t.end < next_day:
-							text += "\t" + timerToString(t)  + "\r\n"
+							text += "\t" + timerToString(t) + "\r\n"
 					
 				callback(SUBJECT, BODY % (path, limit, free) + text)
 			else:

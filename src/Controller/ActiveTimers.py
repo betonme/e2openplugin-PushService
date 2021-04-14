@@ -31,8 +31,8 @@ from time import time, localtime, strftime
 
 # Constants
 SUBJECT = _("Found active timer(s)")
-BODY    = _("Active timer list:\n%s")
-TAG     = _("ActiveTimerPushed")
+BODY = _("Active timer list:\n%s")
+TAG = _("ActiveTimerPushed")
 
 
 class ActiveTimers(ControllerBase):
@@ -59,7 +59,7 @@ class ActiveTimers(ControllerBase):
 				log.debug(_("ActiveTimers: Skip justplay") + str(timer.name))
 				pass
 			
-			elif str(timer.service_ref)[0]=="-":
+			elif str(timer.service_ref)[0] == "-":
 				log.debug(_("ActiveTimers: Skip serviceref") + str(timer.name))
 				pass
 			

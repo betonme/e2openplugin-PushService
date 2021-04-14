@@ -33,7 +33,7 @@ from enigma import eConsoleAppContainer
 
 # Constants
 SUBJECT = _("OPKG Update Notification")
-BODY    = _("There are updates available:\n%s")
+BODY = _("There are updates available:\n%s")
 
 
 class OPKGUpdateNotification(ControllerBase):
