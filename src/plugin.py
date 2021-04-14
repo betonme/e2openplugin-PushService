@@ -16,7 +16,9 @@
 #
 #######################################################################
 
-import os, sys, traceback
+import os
+import sys
+import traceback
 
 # Plugin
 from Plugins.Plugin import PluginDescriptor
@@ -58,7 +60,7 @@ def setup(session, **kwargs):
 		###
 		session.open(ConfigScreen.ConfigScreen)
 	except Exception, e:
-		log.exception( ("PushService setup exception ") + str(e) )
+		log.exception(("PushService setup exception ") + str(e))
 
 
 #######################################################
@@ -71,20 +73,20 @@ def autostart(reason, **kwargs):
 				gPushService = PushService()
 				gPushService.start()
 			except Exception, e:
-				log.exception( ("PushService autostart exception ") + str(e) )
+				log.exception(("PushService autostart exception ") + str(e))
 
 
 #######################################################
 # Plugin main function
 def Plugins(**kwargs):
-	
+
 	descriptors = []
-	
+
 	if config.pushservice.enable.value:
 		# AutoStart
-		descriptors.append( PluginDescriptor(where = PluginDescriptor.WHERE_AUTOSTART, fnc = autostart, needsRestart = False) )
-		
+		descriptors.append(PluginDescriptor(where=PluginDescriptor.WHERE_AUTOSTART, fnc=autostart, needsRestart=False))
+
 	#TODO icon
-	descriptors.append( PluginDescriptor(name = NAME, description = NAME + " " +_("configuration"), where = PluginDescriptor.WHERE_PLUGINMENU, fnc = setup, needsRestart = False) ) #icon = "/icon.png"
+	descriptors.append(PluginDescriptor(name=NAME, description=NAME + " " + _("configuration"), where=PluginDescriptor.WHERE_PLUGINMENU, fnc=setup, needsRestart=False)) #icon = "/icon.png"
 
 	return descriptors

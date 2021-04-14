@@ -33,20 +33,20 @@ from enigma import eConsoleAppContainer
 
 # Constants
 SUBJECT = _("OPKG Update Notification")
-BODY    = _("There are updates available:\n%s")
+BODY = _("There are updates available:\n%s")
 
 
 class OPKGUpdateNotification(ControllerBase):
-	
+
 	ForceSingleInstance = True
-	
+
 	def __init__(self):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
-		
+
 		# Default configuration
-		self.setOption( 'selfcheck', NoSave(ConfigYesNo( default = False )), _("Start update check if not done yet") )
-		
+		self.setOption('selfcheck', NoSave(ConfigYesNo(default=False)), _("Start update check if not done yet"))
+
 		self.data = ""
 		self.container = eConsoleAppContainer()
 		try:
@@ -75,23 +75,23 @@ class OPKGUpdateNotification(ControllerBase):
 			self.container.execute("opkg list-upgradable")
 
 	def opkgupgradableFinished(self, retval=None):
-		
+
 		try:
-			log.debug( "PushService retval: ",str(retval) )
+			log.debug("PushService retval: ", str(retval))
 		except:
 			pass
 		try:
-			log.debug( "PushService self.data: ",str(self.data) )
+			log.debug("PushService self.data: ", str(self.data))
 		except:
 			pass
-		
+
 		updates = ""
 		excepts = ""
-		
+
 		if self.data:
 			try:
 				for line in self.data.split("\n"):
-					log.debug( "PushService opkg upgradable data: ",line )
+					log.debug("PushService opkg upgradable data: ", line)
 					if line.startswith("Inflating"):
 						continue
 					if line.startswith("Updated"):
@@ -121,16 +121,15 @@ class OPKGUpdateNotification(ControllerBase):
 					updates += line + "\r\n"
 			except Exception, e:
 				excepts += "\r\n\r\nException:\r\n" + str(e)
-		
+
 		if excepts:
-			log.exception( excepts )
-		
+			log.exception(excepts)
+
 		if updates:
 			#callback( SUBJECT, BODY % (updates) )
-			
+
 			#TODO Problem test run won't get the message
 			# Push mail
 			from Plugins.Extensions.PushService.plugin import gPushService
 			if gPushService:
 				gPushService.push(self, SUBJECT, BODY % (updates))
-

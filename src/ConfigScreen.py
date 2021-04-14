@@ -16,7 +16,9 @@
 #
 #######################################################################
 
-import os, sys, traceback
+import os
+import sys
+import traceback
 
 # Config
 from Components.config import *
@@ -55,80 +57,81 @@ from Logger import log
 # Configuration screen
 class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 
-	skinfile = os.path.join( resolveFilename(SCOPE_PLUGINS), "Extensions/PushService/skin.xml" )
+	skinfile = os.path.join(resolveFilename(SCOPE_PLUGINS), "Extensions/PushService/skin.xml")
 	skin = open(skinfile).read()
 
 	def __init__(self, session):
 		Screen.__init__(self, session)
 		HelpableScreen.__init__(self)
 		self.skinName = ["ConfigScreen", "ConfigListScreen"]
-		
+
 		from plugin import NAME, VERSION, gPushService
 		self.setup_title = NAME + " " + _("Configuration") + " " + VERSION
-		
+
 		PushServiceBase.__init__(self)
 		if gPushService:
 			gPushService.stop()
-		
+
 		# Load local moduls to work on
 		self.load()
-		
+
 		# Buttons
-		self["key_red"]    = StaticText("")
-		self["key_green"]  = StaticText("")
-		self["key_blue"]   = StaticText("")
+		self["key_red"] = StaticText("")
+		self["key_green"] = StaticText("")
+		self["key_blue"] = StaticText("")
 		self["key_yellow"] = StaticText("")
-		
+
 		self.help_window = None
-		
+
 		# Define Actions
 		#E2 Bug self["custom_actions"] = HelpableActionMap(self, ["SetupActions", "ColorActions", "PushServiceConfigActions"],
 		self["custom_actions"] = HelpableActionMap(self, "PushServiceConfigActions",
 		{
-			"pageUp":				(self.pageUp,       _("Page up")),
-			"pageDown":				(self.pageDown,     _("Page down")),
+			"pageUp": (self.pageUp, _("Page up")),
+			"pageDown": (self.pageDown, _("Page down")),
 		}, -2) # higher priority
-		
+
 		self["main_actions"] = HelpableActionMap(self, "PushServiceConfigActions",
 		{
-			"red":					(self.keyCancel,       _("Exit without saving")),
-			"green":				(self.keySave,         _("Save and exit")),
+			"red": (self.keyCancel, _("Exit without saving")),
+			"green": (self.keySave, _("Save and exit")),
 		}, -2) # higher priority
 		self["main_actions"].setEnabled(False)
-		
+
 		self["main_actions_enabled"] = HelpableActionMap(self, "PushServiceConfigActions",
 		{
-			"yellow":				(self.showServices,     _("Show Services")),
-			"blue":					(self.showControllers,  _("Show Controllers")),
+			"yellow": (self.showServices, _("Show Services")),
+			"blue": (self.showControllers, _("Show Controllers")),
 		}, -2) # higher priority
 		self["main_actions_enabled"].setEnabled(False)
-		
+
 		self["service_actions"] = HelpableActionMap(self, "PushServiceConfigActions",
 		{
-			"red":					(self.showMain,        _("Back to main screen")),
-			"green":				(self.testService,     _("Test selected Service")),
-			"yellow":				(self.addServices,     _("Add Service")),
-			"blue":					(self.removeServices,  _("Remove Service")),
+			"red": (self.showMain, _("Back to main screen")),
+			"green": (self.testService, _("Test selected Service")),
+			"yellow": (self.addServices, _("Add Service")),
+			"blue": (self.removeServices, _("Remove Service")),
 		}, -2) # higher priority
 		self["service_actions"].setEnabled(False)
-		
+
 		self["controller_actions"] = HelpableActionMap(self, "PushServiceConfigActions",
 		{
-			"red":					(self.showMain,            _("Back to main screen")),
-			"green":				(self.testController,      _("Test selected Controller")),
-			"yellow":				(self.addControllers,      _("Add Controller")),
-			"blue": 				(self.removeControllers,   _("Remove Controller")),
+			"red": (self.showMain, _("Back to main screen")),
+			"green": (self.testController, _("Test selected Controller")),
+			"yellow": (self.addControllers, _("Add Controller")),
+			"blue": (self.removeControllers, _("Remove Controller")),
 		}, -2) # higher priority
 		self["controller_actions"].setEnabled(False)
-		
+
 		# Initialize Configuration part
 		self.list = []
 		self.state = MAIN
 		self.build()
-		ConfigListScreen.__init__(self, self.list, session = session, on_change = self.change)
-		
+		ConfigListScreen.__init__(self, self.list, session=session, on_change=self.change)
+
 		# Override selectionChanged because our config tuples are bigger
-		self.onChangedEntry = [ ]
+		self.onChangedEntry = []
+
 		def selectionChanged():
 			current = self["config"].getCurrent()
 			if self["config"].current != current:
@@ -140,33 +143,33 @@ class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 			for x in self["config"].onSelectionChanged:
 				x()
 		self["config"].selectionChanged = selectionChanged
-		
+
 		self.setTitle(self.setup_title)
 
 	def change(self, uniqueid=None):
 		select = self.build(uniqueid)
-		self["config"].setList( self.list )
-		
+		self["config"].setList(self.list)
+
 		if select is not None:
 			self["config"].instance.moveSelectionTo(select)
 
 	def build(self, uniqueid=None):
 		self.list = []
 		select = None
-		
+
 		def buildEntries(entries):
 			select = None
 			if entries:
 				for idx, entry in enumerate(entries):
-					self.list.append( getConfigListEntry( entry.getNameId(), entry.getConfigEnable(), idx ) )
+					self.list.append(getConfigListEntry(entry.getNameId(), entry.getConfigEnable(), idx))
 					if entry.getUniqueID() == uniqueid:
 						# Select the added entry
-						select = len(self.list)-1
+						select = len(self.list) - 1
 					if entry.getEnable():
 						for key, element, description in entry.getConfigOptions():
-							self.list.append( getConfigListEntry( "  " + str(description), element, idx ) )
+							self.list.append(getConfigListEntry("  " + str(description), element, idx))
 			return select
-		
+
 		if self.state == MAIN:
 			self["key_red"].setText(_("Cancel"))
 			self["key_green"].setText(_("OK"))
@@ -181,26 +184,26 @@ class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 				self["key_yellow"].setText("")
 				self["key_blue"].setText("")
 				self["main_actions_enabled"].setEnabled(False)
-			
-			self.list.append( getConfigListEntry( _("Enable PushService"), config.pushservice.enable, 0 ) )
-			
+
+			self.list.append(getConfigListEntry(_("Enable PushService"), config.pushservice.enable, 0))
+
 			if config.pushservice.enable.value:
-				self.list.append( getConfigListEntry( _("Dreambox name"), config.pushservice.boxname, 0 ) )
-				self.list.append( getConfigListEntry( _("Config file"), config.pushservice.xmlpath, 0 ) )
-				
-				self.list.append( getConfigListEntry( _("Start time (HH:MM)"), config.pushservice.time, 0 ) )
-				self.list.append( getConfigListEntry( _("Period in hours (0=disabled)"), config.pushservice.period, 0 ) )
-				self.list.append( getConfigListEntry( _("Run on boot"), config.pushservice.runonboot, 0 ) )
+				self.list.append(getConfigListEntry(_("Dreambox name"), config.pushservice.boxname, 0))
+				self.list.append(getConfigListEntry(_("Config file"), config.pushservice.xmlpath, 0))
+
+				self.list.append(getConfigListEntry(_("Start time (HH:MM)"), config.pushservice.time, 0))
+				self.list.append(getConfigListEntry(_("Period in hours (0=disabled)"), config.pushservice.period, 0))
+				self.list.append(getConfigListEntry(_("Run on boot"), config.pushservice.runonboot, 0))
 				if config.pushservice.runonboot.value:
-					self.list.append( getConfigListEntry( _("Boot delay"), config.pushservice.bootdelay, 0 ) )
-				
-				self.list.append( getConfigListEntry( _("Push errors"), config.pushservice.push_errors, 0 ) )
-				
-				self.list.append( getConfigListEntry( _("Log to shell"), config.pushservice.log_shell, 0 ) )
-				self.list.append( getConfigListEntry( _("Log to file"), config.pushservice.log_write, 0 ) )
+					self.list.append(getConfigListEntry(_("Boot delay"), config.pushservice.bootdelay, 0))
+
+				self.list.append(getConfigListEntry(_("Push errors"), config.pushservice.push_errors, 0))
+
+				self.list.append(getConfigListEntry(_("Log to shell"), config.pushservice.log_shell, 0))
+				self.list.append(getConfigListEntry(_("Log to file"), config.pushservice.log_write, 0))
 				if config.pushservice.log_write.value:
-					self.list.append( getConfigListEntry( _("Log file path and name"), config.pushservice.log_file, 0 ) )
-			
+					self.list.append(getConfigListEntry(_("Log file path and name"), config.pushservice.log_file, 0))
+
 		elif self.state == SERVICES:
 			self["key_red"].setText(_("Main"))
 			self["key_green"].setText(_("Test"))
@@ -210,9 +213,9 @@ class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 			self["main_actions_enabled"].setEnabled(False)
 			self["controller_actions"].setEnabled(False)
 			self["service_actions"].setEnabled(True)
-			
+
 			select = buildEntries(self.getServices())
-		
+
 		elif self.state == CONTROLLERS:
 			self["key_red"].setText(_("Main"))
 			self["key_green"].setText(_("Test"))
@@ -222,9 +225,9 @@ class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 			self["main_actions_enabled"].setEnabled(False)
 			self["service_actions"].setEnabled(False)
 			self["controller_actions"].setEnabled(True)
-			
+
 			select = buildEntries(self.getControllers())
-			
+
 		return select
 
 	def getCurrentEntry(self):
@@ -257,13 +260,13 @@ class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 
 	def addServices(self):
 		self.hideHelpWindow()
-		self.session.openWithCallback(self.addServicesCB, ChoiceBox,_("Add Service"), self.getAvlServices())
+		self.session.openWithCallback(self.addServicesCB, ChoiceBox, _("Add Service"), self.getAvlServices())
 
 	def addServicesCB(self, result):
 		module = result and result[1]
 		if module:
 			id = self.addService(module)
-			self.change( id )
+			self.change(id)
 
 	def removeServices(self):
 		self.hideHelpWindow()
@@ -273,7 +276,7 @@ class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 			select = current[2]
 		slist = self.getServiceInstances()
 		if slist:
-			self.session.openWithCallback(self.removeServicesCB, ChoiceBox,_("Remove controller"), list=slist, selection=select)
+			self.session.openWithCallback(self.removeServicesCB, ChoiceBox, _("Remove controller"), list=slist, selection=select)
 
 	def removeServicesCB(self, result):
 		service = result and result[1]
@@ -288,13 +291,13 @@ class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 
 	def addControllers(self):
 		self.hideHelpWindow()
-		self.session.openWithCallback(self.addControllersCB, ChoiceBox,_("Add Controller"), self.getAvlControllers())
+		self.session.openWithCallback(self.addControllersCB, ChoiceBox, _("Add Controller"), self.getAvlControllers())
 
 	def addControllersCB(self, result):
 		module = result and result[1]
 		if module:
 			id = self.addController(module)
-			self.change( id )
+			self.change(id)
 
 	def removeControllers(self):
 		self.hideHelpWindow()
@@ -304,7 +307,7 @@ class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 			select = current[2]
 		plist = self.getControllerInstances()
 		if plist:
-			self.session.openWithCallback(self.removeControllersCB, ChoiceBox,_("Remove controller"), list=plist, selection=select)
+			self.session.openWithCallback(self.removeControllersCB, ChoiceBox, _("Remove controller"), list=plist, selection=select)
 
 	def removeControllersCB(self, result):
 		controller = result and result[1]
@@ -315,13 +318,13 @@ class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 	# Overwrite ConfigListScreen keySave function
 	def keySave(self):
 		self.hideHelpWindow()
-		
+
 		# Save E2 PushService config
 		self.saveAll()
-		
+
 		# Build xml config and write it
 		self.save()
-		
+
 		# If we need assign / "write" access import the plugin
 		# global won't work across module scope
 		import plugin
@@ -336,7 +339,7 @@ class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 		else:
 			#global gPushService
 			plugin.gPushService = None
-		
+
 		self.close()
 
 	# Overwrite ConfigListScreen keyCancel function
@@ -352,7 +355,7 @@ class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 			# Make sure the configuration is still consistent
 			gPushService.load()
 			gPushService.start()
-		
+
 		# Call baseclass function
 		ConfigListScreen.cancelConfirm(self, result)
 
@@ -370,11 +373,11 @@ class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 		# Allows testing the actually not saved configuration
 		#if self.state != SERVICES: return
 		self.hideHelpWindow()
-		
+
 		# Get the selected Service
 		current = self["config"].getCurrent()
 		service = current and self.getService(current[2])
-		
+
 		if service and service.getEnable():
 			self.session.open(TestConsole, service)
 
@@ -382,11 +385,11 @@ class ConfigScreen(Screen, ConfigListScreen, HelpableScreen, PushServiceBase):
 		# Allows testing the actually not saved configuration
 		#if self.state != CONTROLLERS: return
 		self.hideHelpWindow()
-		
+
 		# Get the selected Controller
 		current = self["config"].getCurrent()
 		controller = current and self.getController(current[2])
-		
+
 		if controller and controller.getEnable():
 			self.session.open(TestConsole, controller)
 
@@ -405,16 +408,16 @@ class TestConsole(Screen):
 		title = ""
 		text = ""
 		self.test = test
-		
+
 		self["text"] = ScrollLabel("")
-		self["actions"] = ActionMap(["WizardActions", "DirectionActions"], 
+		self["actions"] = ActionMap(["WizardActions", "DirectionActions"],
 		{
-			"ok":    self.cancel,
-			"back":  self.cancel,
-			"up":    self["text"].pageUp,
-			"down":  self["text"].pageDown
+			"ok": self.cancel,
+			"back": self.cancel,
+			"up": self["text"].pageUp,
+			"down": self["text"].pageDown
 		}, -1)
-		
+
 		# Set title and text
 		test.begin()
 		if isinstance(test, ServiceBase):
@@ -426,22 +429,22 @@ class TestConsole(Screen):
 		else:
 			title = _("Testing")
 			text = _("Nothing to test")
-		
+
 		self.setTitle(title)
 		self.setText(text)
-		
+
 		# Starting test
 		try:
 			if isinstance(test, ServiceBase):
-				test.push( self.callback, self.errback, _("PushService Config"), _("Push test"), _("If You can see this, Your configuration is correct.") )
+				test.push(self.callback, self.errback, _("PushService Config"), _("Push test"), _("If You can see this, Your configuration is correct."))
 			elif isinstance(test, ControllerBase):
-				test.run( self.callback, self.errback )
+				test.run(self.callback, self.errback)
 		except Exception, e:
 			text = _("PushService Test exception:") + str(e) + "\n\n"
 			exc_type, exc_value, exc_traceback = sys.exc_info()
 			for line in traceback.format_exception(exc_type, exc_value, exc_traceback):
 				text += line
-			log.exception( text )
+			log.exception(text)
 			self.setText(text)
 
 	def callback(self, *args):

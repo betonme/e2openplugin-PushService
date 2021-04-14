@@ -30,13 +30,13 @@ from datetime import date, timedelta
 
 # Constants
 SUBJECT = _("Missing timer")
-BODY    = _("There are no timer for tomorrow - %s")
+BODY = _("There are no timer for tomorrow - %s")
 
 
 class MissingTimers(ControllerBase):
-	
+
 	ForceSingleInstance = True
-	
+
 	def __init__(self):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
@@ -46,18 +46,18 @@ class MissingTimers(ControllerBase):
 		# Callback should return with at least one of the parameter: Header, Body, Attachment
 		# If empty or none is returned, nothing will be sent
 		timers = 0
-		tomorrow_begin = mktime( ( date.today() + timedelta(days=1) ).timetuple() )
-		tomorrow_end   = tomorrow_begin + 24*60*60
-		
+		tomorrow_begin = mktime((date.today() + timedelta(days=1)).timetuple())
+		tomorrow_end = tomorrow_begin + 24 * 60 * 60
+
 		for timer in NavigationInstance.instance.RecordTimer.timer_list:
-			if not timer.disabled and str(timer.service_ref)[0]!="-":
+			if not timer.disabled and str(timer.service_ref)[0] != "-":
 				timer_begin = timer.begin
 				if tomorrow_begin <= timer_begin <= tomorrow_end:
 					timers += 1
 					break
-				
+
 		if timers == 0:
-			callback( SUBJECT, BODY % strftime(_("%Y.%m.%d"), localtime(tomorrow_begin)))
+			callback(SUBJECT, BODY % strftime(_("%Y.%m.%d"), localtime(tomorrow_begin)))
 		else:
 			callback()
 

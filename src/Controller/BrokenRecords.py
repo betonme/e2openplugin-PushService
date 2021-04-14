@@ -30,13 +30,13 @@ import fnmatch
 
 # Constants
 SUBJECT = _("Broken records")
-BODY    = _("There are broken records - %s")
+BODY = _("There are broken records - %s")
 
 
 class BrokenRecords(ControllerBase):
-	
+
 	ForceSingleInstance = True
-	
+
 	def __init__(self):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
@@ -46,8 +46,8 @@ class BrokenRecords(ControllerBase):
 		# Callback should return with at least one of the parameter: Header, Body, Attachment
 		# If empty or none is returned, nothing will be sent
 		yesterday_end = time()
-		yesterday_begin = yesterday_end - 24*60*60
-		
+		yesterday_begin = yesterday_end - 24 * 60 * 60
+
 		broken_records = []
 		for root, dirnames, filenames in os.walk(config.usage.default_path.value):
 			for filename in fnmatch.filter(filenames, '*.ts'):
@@ -56,9 +56,9 @@ class BrokenRecords(ControllerBase):
 				if yesterday_begin <= record_end <= yesterday_end:
 					if os.path.getsize(record_path) < 10000000: # 10MB
 						broken_records.append(record_path)
-				
+
 		if broken_records:
-			callback( SUBJECT, BODY % "\n\n" + "\n".join( broken_records ) )
+			callback(SUBJECT, BODY % "\n\n" + "\n".join(broken_records))
 		else:
 			callback()
 

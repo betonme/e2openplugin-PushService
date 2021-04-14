@@ -29,73 +29,73 @@ from time import localtime, strftime
 
 # Constants
 SUBJECT = _("Found deactivated timer(s)")
-BODY    = _("Deactivated timer list:\n%s")
-TAG     = _("DeactivatedTimerPushed")
+BODY = _("Deactivated timer list:\n%s")
+TAG = _("DeactivatedTimerPushed")
 
 
 class DeactivatedTimers(ControllerBase):
-	
+
 	ForceSingleInstance = True
-	
+
 	def __init__(self):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
 		self.timers = []
-		
+
 		# Default configuration
-		self.setOption( 'remove_timer', NoSave(ConfigYesNo( default = False )), _("Remove deactivated timer(s)") )
-		self.setOption( 'list_similar', NoSave(ConfigYesNo( default = False )), _("List similar timer(s)") )
+		self.setOption('remove_timer', NoSave(ConfigYesNo(default=False)), _("Remove deactivated timer(s)"))
+		self.setOption('list_similar', NoSave(ConfigYesNo(default=False)), _("List similar timer(s)"))
 
 	def run(self, callback, errback):
 		# At the end a plugin has to call one of the functions: callback or errback
 		# Callback should return with at least one of the parameter: Header, Body, Attachment
 		# If empty or none is returned, nothing will be sent
-		
+
 		self.timers = []
 		text = ""
 		list_similar = self.getValue('list_similar')
-		
+
 		def timerToString(timer):
 			return str(timer.name) + "\t" \
 					+ strftime(_("%Y.%m.%d %H:%M"), localtime(timer.begin)) + " - " \
 					+ strftime(_("%H:%M"), localtime(timer.end)) + "\t" \
 					+ str(timer.service_ref and timer.service_ref.getServiceName() or "") \
 					+ "\t" + str(timer.tags)
-		
+
 		import NavigationInstance
 		for timer in NavigationInstance.instance.RecordTimer.timer_list + NavigationInstance.instance.RecordTimer.processed_timers:
 			if timer.justplay:
 				pass
-			
-			elif str(timer.service_ref)[0]=="-":
+
+			elif str(timer.service_ref)[0] == "-":
 				pass
-			
+
 			elif TAG in timer.tags:
 				pass
-			
+
 			elif not timer.disabled:
 				pass
-			
+
 			else:
 				text += timerToString(timer) + "\r\n"
-				
+
 				if list_similar:
 					if not timer.eit:
 						text += "\r\n\r\n" + _("Timer has no EIT") + "\r\n\r\n"
 						continue
-					
+
 					text += "\r\n\r\n" + _("Similar:") + "\r\n"
-					
+
 					for t in NavigationInstance.instance.RecordTimer.timer_list + NavigationInstance.instance.RecordTimer.processed_timers:
 						if not t.disabled and not t.justplay and t.name == timer.name and t.eit != timer.eit:
-							text += "\t" + timerToString(t)  + "\r\n"
-					
+							text += "\t" + timerToString(t) + "\r\n"
+
 					text += "\r\n"
-				
-				self.timers.append( timer )
-			
+
+				self.timers.append(timer)
+
 		if self.timers and text:
-			callback( SUBJECT, BODY % text )
+			callback(SUBJECT, BODY % text)
 		else:
 			callback()
 
@@ -104,7 +104,7 @@ class DeactivatedTimers(ControllerBase):
 		import NavigationInstance
 		# Called after all services succeded
 		if self.getValue('remove_timer'):
-			
+
 			# Remove deactivated timers
 			for timer in self.timers[:]:
 				if timer in NavigationInstance.instance.RecordTimer.processed_timers:
@@ -112,11 +112,11 @@ class DeactivatedTimers(ControllerBase):
 				elif timer in NavigationInstance.instance.RecordTimer.timer_list:
 					NavigationInstance.instance.RecordTimer.timer_list.remove(timer)
 				self.timers.remove(timer)
-			
+
 		# Set tag to avoid resending it
 		for timer in self.timers:
 			if TAG not in timer.tags:
-				log.debug( "[PS] timer append tag" )
+				log.debug("[PS] timer append tag")
 				timer.tags.append(TAG)
 		NavigationInstance.instance.RecordTimer.saveTimer()
 		self.timers = []

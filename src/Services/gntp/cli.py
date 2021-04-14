@@ -8,6 +8,7 @@ from optparse import OptionParser
 # Plugin internal
 from Plugins.Extensions.PushService.Logger import log
 
+
 class ClientParser(OptionParser):
 	def __init__(self):
 		OptionParser.__init__(self)
@@ -45,7 +46,7 @@ class ClientParser(OptionParser):
 		values, args = OptionParser.parse_args(self, args, values)
 
 		if values.message is None:
-			log.debug( 'Enter a message followed by Ctrl-D' )
+			log.debug('Enter a message followed by Ctrl-D')
 			try:
 				message = sys.stdin.read()
 			except KeyboardInterrupt:
@@ -101,6 +102,7 @@ def main():
 	)
 	if result is not True:
 		exit(result)
+
 
 if __name__ == "__main__":
 	main()

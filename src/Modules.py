@@ -16,10 +16,13 @@
 #
 #######################################################################
 
-import os, sys, traceback
+import os
+import sys
+import traceback
 
 # Plugin framework
-import imp, inspect
+import imp
+import inspect
 
 # Plugin internal
 from . import _
@@ -38,61 +41,62 @@ class Modules(object):
 	# Module functions
 	def loadModules(self, path, base):
 		modules = {}
-		
+
 		if not os.path.exists(path):
 			return
-		
+
 		# Import all subfolders to allow relative imports
 		for root, dirs, files in os.walk(path):
 			if root not in sys.path:
 				sys.path.append(root)
-		
+
 		# Import PushService modules
 		files = [fname[:-3] for fname in os.listdir(path) if fname.endswith(".py")]
 		for name in files:
 			module = None
-			
+
 			if name == "__init__":
 				continue
-			
+
 			try:
 				fp, pathname, description = imp.find_module(name, [path])
 			except Exception, e:
-				log.exception( ("PushService Find module exception: ") + str(e) )
+				log.exception(("PushService Find module exception: ") + str(e))
 				fp = None
-			
+
 			if not fp:
-				log.debug( ("PushService No module found: ") + str(name) )
+				log.debug(("PushService No module found: ") + str(name))
 				continue
-			
+
 			try:
-				module = imp.load_module( name, fp, pathname, description)
+				module = imp.load_module(name, fp, pathname, description)
 			except Exception, e:
-				log.exception( ("PushService Load exception: ") + str(e) )
+				log.exception(("PushService Load exception: ") + str(e))
 			finally:
 				# Since we may exit via an exception, close fp explicitly.
-				if fp: fp.close()
-			
+				if fp:
+					fp.close()
+
 			if not module:
-				log.debug( ("PushService No module available: ") + str(name) )
+				log.debug(("PushService No module available: ") + str(name))
 				continue
-			
+
 			# Continue only if the attribute is available
 			if not hasattr(module, name):
-				log.debug( ("PushService Warning attribute not available: ") + str(name) )
+				log.debug(("PushService Warning attribute not available: ") + str(name))
 				continue
-			
+
 			# Continue only if attr is a class
 			attr = getattr(module, name)
 			if not inspect.isclass(attr):
-				log.debug( ("PushService Warning no class definition: ") + str(name) )
+				log.debug(("PushService Warning no class definition: ") + str(name))
 				continue
-			
+
 			# Continue only if the class is a subclass of the corresponding base class
-			if not issubclass( attr, base):
-				log.debug( ("PushService Warning no subclass of base: ") + str(name) )
+			if not issubclass(attr, base):
+				log.debug(("PushService Warning no subclass of base: ") + str(name))
 				continue
-			
+
 			# Add module to the module list
 			modules[name] = attr
 		return modules
@@ -103,7 +107,7 @@ class Modules(object):
 			try:
 				return module()
 			except Exception, e:
-				log.exception( ("PushService Instantiate exception: ") + str(module) + "\n" + str(e) )
+				log.exception(("PushService Instantiate exception: ") + str(module) + "\n" + str(e))
 		else:
-			log.debug( ("PushService Module is not callable") )
+			log.debug(("PushService Module is not callable"))
 			return None

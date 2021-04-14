@@ -31,21 +31,21 @@ from time import time, localtime, strftime
 
 # Constants
 SUBJECT = _("Found active timer(s)")
-BODY    = _("Active timer list:\n%s")
-TAG     = _("ActiveTimerPushed")
+BODY = _("Active timer list:\n%s")
+TAG = _("ActiveTimerPushed")
 
 
 class ActiveTimers(ControllerBase):
-	
+
 	ForceSingleInstance = True
-	
+
 	def __init__(self):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
 		self.timers = []
-		
+
 		# Default configuration
-		self.setOption( 'add_tag', NoSave(ConfigYesNo( default = False )), _("Start update check if not done yet") )
+		self.setOption('add_tag', NoSave(ConfigYesNo(default=False)), _("Start update check if not done yet"))
 
 	def run(self, callback, errback):
 		# At the end a plugin has to call one of the functions: callback or errback
@@ -56,34 +56,34 @@ class ActiveTimers(ControllerBase):
 		now = time()
 		for timer in NavigationInstance.instance.RecordTimer.timer_list + NavigationInstance.instance.RecordTimer.processed_timers:
 			if timer.justplay:
-				log.debug( _("ActiveTimers: Skip justplay") + str(timer.name) )
+				log.debug(_("ActiveTimers: Skip justplay") + str(timer.name))
 				pass
-			
-			elif str(timer.service_ref)[0]=="-":
-				log.debug( _("ActiveTimers: Skip serviceref") + str(timer.name) )
+
+			elif str(timer.service_ref)[0] == "-":
+				log.debug(_("ActiveTimers: Skip serviceref") + str(timer.name))
 				pass
-			
+
 			elif self.getValue('add_tag') and TAG in timer.tags:
-				log.debug( _("ActiveTimers: Skip tag") + str(timer.name) )
+				log.debug(_("ActiveTimers: Skip tag") + str(timer.name))
 				pass
-			
+
 			elif timer.disabled:
-				log.debug( _("ActiveTimers: Skip disabled") + str(timer.name) )
+				log.debug(_("ActiveTimers: Skip disabled") + str(timer.name))
 				pass
-			
+
 			elif timer.begin < now:
-				log.debug( _("ActiveTimers: Skip begin < now") + str(timer.name) )
+				log.debug(_("ActiveTimers: Skip begin < now") + str(timer.name))
 				pass
-			
+
 			else:
 				text += str(timer.name) + "    " \
 							+ strftime(_("%Y.%m.%d %H:%M"), localtime(timer.begin)) + " - " \
 							+ strftime(_("%H:%M"), localtime(timer.end)) + "    " \
 							+ str(timer.service_ref and timer.service_ref.getServiceName() or "") \
 							+ "\n"
-				self.timers.append( timer )
+				self.timers.append(timer)
 		if self.timers and text:
-			callback( SUBJECT, BODY % text )
+			callback(SUBJECT, BODY % text)
 		else:
 			callback()
 

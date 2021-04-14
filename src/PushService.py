@@ -17,7 +17,8 @@
 #######################################################################
 
 import os
-import sys, traceback
+import sys
+import traceback
 from time import localtime
 
 from Components.config import config
@@ -42,68 +43,70 @@ class PushService(PushServiceBase):
 
 	def __init__(self):
 		PushServiceBase.__init__(self)
-		
+
 		self.state = PSBOOT if config.pushservice.runonboot.value else PSFIRST
-		
+
 		self.timer = eTimer()
 		try:
 			self.timer_conn = self.timer.timeout.connect(self.do)
 		except:
 			self.timer.callback.append(self.do)
-		
+
 		# Read XML file, parse it and instantiate configured plugins
 		self.load()
-		
-		#TODO Run in a new thread
 
+		#TODO Run in a new thread
 
 	######################################
 	# Statemachine and timer
+
 	def start(self):
 		log.reinit()
-		
-		log.info( "PushService start" )
+
+		log.info("PushService start")
 		self.stopTimer()
-		
+
 		self.begin()
 		self.next()
 
 	def stop(self):
-		log.debug( "PushService stop" )
+		log.debug("PushService stop")
 		self.stopTimer()
-		
+
 		self.end()
 		self.state = PSFIRST
 
-	def next(self, state = None):
-		if state: self.state = state
-		log.debug( "PushService next", self.state )
-		
+	def next(self, state=None):
+		if state:
+			self.state = state
+		log.debug("PushService next", self.state)
+
 		if self.state == PSBOOT:
-			self.startTimer( int(config.pushservice.bootdelay.value), PSBOOTRUN )
-		
+			self.startTimer(int(config.pushservice.bootdelay.value), PSBOOTRUN)
+
 		elif self.state == PSBOOTRUN \
 			or self.state == PSFIRST:
 			cltime = config.pushservice.time.value
 			lotime = localtime()
-			ltime = lotime[3]*60 + lotime[4]
-			ctime = cltime[0]*60 + cltime[1]
+			ltime = lotime[3] * 60 + lotime[4]
+			ctime = cltime[0] * 60 + cltime[1]
 			seconds = 60 * abs(ctime - ltime)
-			self.startTimer( seconds, PSFIRSTRUN )
-		
+			self.startTimer(seconds, PSFIRSTRUN)
+
 		elif self.state == PSFIRSTRUN \
 			or self.state == PSCYCLE:
 			period = int(config.pushservice.period.value)
 			if period > 0:
-				self.startTimer( period*60*60, PSCYCLE )
+				self.startTimer(period * 60 * 60, PSCYCLE)
 
 	def do(self):
 		self.run()
 		self.next()
 
 	def startTimer(self, seconds, state=None):
-		if state: self.state = state
-		self.timer.startLongTimer( seconds )
+		if state:
+			self.state = state
+		self.timer.startLongTimer(seconds)
 
 	def stopTimer(self):
 		if self.timer.isActive():

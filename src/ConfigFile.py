@@ -28,15 +28,16 @@ from xml.etree.cElementTree import ElementTree, tostring, parse
 from . import _
 from Logger import log
 
+
 def indent(elem, level=0):
-	i = "\n" + level*"  "
+	i = "\n" + level * "  "
 	if len(elem):
 		if not elem.text or not elem.text.strip():
 			elem.text = i + "  "
 		if not elem.tail or not elem.tail.strip():
 			elem.tail = i
 		for elem in elem:
-			indent(elem, level+1)
+			indent(elem, level + 1)
 		if not elem.tail or not elem.tail.strip():
 			elem.tail = i
 	else:
@@ -52,26 +53,26 @@ class ConfigFile(object):
 
 	def readXML(self):
 		path = config.pushservice.xmlpath.value
-		
+
 		# Abort if no config found
 		if not os.path.exists(path):
-			log.debug( "PushService No configuration file present" )
+			log.debug("PushService No configuration file present")
 			return None
-		
+
 		# Parse if mtime differs from whats saved
 		mtime = os.path.getmtime(path)
 		if mtime == self.mtime:
 			# No changes in configuration, won't read again
 			return self.cache
-		
+
 		# Parse XML
 		try:
 			etree = parse(path).getroot()
 		except Exception, e:
-			log.exception( ("PushService Exception in readXML: ") + str(e) )
+			log.exception(("PushService Exception in readXML: ") + str(e))
 			etree = None
 			mtime = -1
-		
+
 		# Save time and cache file content
 		self.mtime = mtime
 		self.cache = etree
@@ -79,22 +80,21 @@ class ConfigFile(object):
 
 	def writeXML(self, etree):
 		path = config.pushservice.xmlpath.value
-		
+
 		indent(etree)
 		data = tostring(etree, 'utf-8')
-		
+
 		f = None
 		try:
 			f = open(path, 'w')
 			if data:
 				f.writelines(data)
 		except Exception, e:
-			log.exception( ("PushService Exception in writeXML: ") + str(e) )
+			log.exception(("PushService Exception in writeXML: ") + str(e))
 		finally:
 			if f is not None:
 				f.close()
-		
-		# Save time and cache file content
-		self.mtime = os.path.getmtime( path )
-		self.cache = etree
 
+		# Save time and cache file content
+		self.mtime = os.path.getmtime(path)
+		self.cache = etree

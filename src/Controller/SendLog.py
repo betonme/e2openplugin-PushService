@@ -30,25 +30,25 @@ import fnmatch
 
 # Constants
 SUBJECT = _("Found Log(s)")
-BODY    = _("Log(s) are attached")
+BODY = _("Log(s) are attached")
 
 
 class SendLog(ControllerBase):
-	
+
 	ForceSingleInstance = True
-	
+
 	def __init__(self):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
 		self.logfiles = []
 
 		# Default configuration
-		self.setOption( 'path',            NoSave(ConfigText(  default = "/media/hdd/", fixed_size = False )), _("Path to check") )
-		self.setOption( 'file_pattern',    NoSave(ConfigText(  default = "*.log", fixed_size = False )), _("Filename pattern (No RegExp)") )
-		self.setOption( 'content_pattern', NoSave(ConfigText(  default = ".*", fixed_size = False )), _("Content pattern (RegExp)") )
-		self.setOption( 'scan_subs',       NoSave(ConfigYesNo( default = False )), _("Scan subfolders") )
-		self.setOption( 'rename_logs',     NoSave(ConfigYesNo( default = False )), _("Rename log(s)") )
-		self.setOption( 'delete_logs',     NoSave(ConfigYesNo( default = False )), _("Delete log(s)") )
+		self.setOption('path', NoSave(ConfigText(default="/media/hdd/", fixed_size=False)), _("Path to check"))
+		self.setOption('file_pattern', NoSave(ConfigText(default="*.log", fixed_size=False)), _("Filename pattern (No RegExp)"))
+		self.setOption('content_pattern', NoSave(ConfigText(default=".*", fixed_size=False)), _("Content pattern (RegExp)"))
+		self.setOption('scan_subs', NoSave(ConfigYesNo(default=False)), _("Scan subfolders"))
+		self.setOption('rename_logs', NoSave(ConfigYesNo(default=False)), _("Rename log(s)"))
+		self.setOption('delete_logs', NoSave(ConfigYesNo(default=False)), _("Delete log(s)"))
 
 	def run(self, callback, errback):
 		# At the end a plugin has to call one of the functions: callback or errback
@@ -63,32 +63,32 @@ class SendLog(ControllerBase):
 		if self.getValue('scan_subs'):
 			for root, dirnames, filenames in os.walk(path):
 				for filename in fnmatch.filter(filenames, file_pattern):
-					logfile = os.path.join( root, filename )
-					if( content_pattern == ".*" ):
-						self.logfiles.append( logfile )
+					logfile = os.path.join(root, filename)
+					if(content_pattern == ".*"):
+						self.logfiles.append(logfile)
 					else:
-						infile = open(logfile,"r")
+						infile = open(logfile, "r")
 						for line in infile:
 							if prog.match(line):
-								self.logfiles.append( logfile )
+								self.logfiles.append(logfile)
 								break
 						infile.close()
 		else:
-			filenames = os.listdir( path )
+			filenames = os.listdir(path)
 			for filename in fnmatch.filter(filenames, file_pattern):
-				logfile = os.path.join( path, filename )
-				if( content_pattern == ".*" ):
-					self.logfiles.append( logfile )
+				logfile = os.path.join(path, filename)
+				if(content_pattern == ".*"):
+					self.logfiles.append(logfile)
 				else:
-					infile = open(logfile,"r")
+					infile = open(logfile, "r")
 					for line in infile:
 						if prog.match(line):
-							self.logfiles.append( logfile )
+							self.logfiles.append(logfile)
 							break
 					infile.close()
-		
+
 		if self.logfiles:
-			callback( SUBJECT, BODY, self.logfiles )
+			callback(SUBJECT, BODY, self.logfiles)
 		else:
 			callback()
 
@@ -98,18 +98,18 @@ class SendLog(ControllerBase):
 		if self.getValue('delete_logs'):
 			# Delete logfiles
 			for logfile in self.logfiles[:]:
-				if os.path.exists( logfile ):
-					os.remove( logfile )
-				self.logfiles.remove( logfile )
+				if os.path.exists(logfile):
+					os.remove(logfile)
+				self.logfiles.remove(logfile)
 		elif self.getValue('rename_logs'):
 			# Rename logfiles to avoid resending it
 			for logfile in self.logfiles[:]:
-				if os.path.exists( logfile ):
+				if os.path.exists(logfile):
 					# Adapted from autosubmit - instead of .sent we will use .pushed
 					currfilename = str(os.path.basename(logfile))
 					newfilename = "/media/hdd/" + currfilename + ".pushed"
-					os.rename(logfile,newfilename)
-				self.logfiles.remove( logfile )
+					os.rename(logfile, newfilename)
+				self.logfiles.remove(logfile)
 
 	def errback(self):
 		# Called after all services has returned, but at least one has failed

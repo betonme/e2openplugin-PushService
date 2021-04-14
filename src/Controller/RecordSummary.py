@@ -30,22 +30,22 @@ from time import localtime, strftime
 
 # Constants
 SUBJECT = _("Record Summary")
-BODY    = _("Finished record list:\n%s")
-TAG     = _("FinishedTimerPushed")
+BODY = _("Finished record list:\n%s")
+TAG = _("FinishedTimerPushed")
 
 
 class RecordSummary(ControllerBase):
-	
+
 	ForceSingleInstance = True
-	
+
 	def __init__(self):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
 		self.timers = []
-		
+
 		# Default configuration
-		self.setOption( 'remove_timer',        NoSave(ConfigYesNo( default = False )), _("Remove finished timer(s)") )
-		self.setOption( 'include_description', NoSave(ConfigYesNo( default = False )), _("Include timer description") )
+		self.setOption('remove_timer', NoSave(ConfigYesNo(default=False)), _("Remove finished timer(s)"))
+		self.setOption('include_description', NoSave(ConfigYesNo(default=False)), _("Include timer description"))
 
 	def run(self, callback, errback):
 		# At the end a plugin has to call one of the functions: callback or errback
@@ -56,16 +56,16 @@ class RecordSummary(ControllerBase):
 		for timer in NavigationInstance.instance.RecordTimer.processed_timers:
 			if timer.justplay:
 				pass
-			
-			elif str(timer.service_ref)[0]=="-":
+
+			elif str(timer.service_ref)[0] == "-":
 				pass
-			
+
 			elif TAG in timer.tags:
 				pass
-			
+
 			elif timer.disabled:
 				pass
-			
+
 			else:
 				text += str(timer.name) + "\t" \
 							+ strftime(_("%Y.%m.%d %H:%M"), localtime(timer.begin)) + " - " \
@@ -74,9 +74,9 @@ class RecordSummary(ControllerBase):
 							+ "\n"
                                 if self.getValue('include_description'):
 					text += str(timer.description) + "\n\n"
-				self.timers.append( timer )
+				self.timers.append(timer)
 		if self.timers and text:
-			callback( SUBJECT, BODY % text )
+			callback(SUBJECT, BODY % text)
 		else:
 			callback()
 

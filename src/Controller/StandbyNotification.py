@@ -31,68 +31,68 @@ SUBJECT = _("Standby Notification")
 
 
 class StandbyNotification(ControllerBase):
-	
+
 	ForceSingleInstance = True
-	
+
 	def __init__(self):
 		# Is called on instance creation
 		ControllerBase.__init__(self)
-		
+
 		# Default configuration
-		self.setOption( 'send_after_bootup',    NoSave(ConfigYesNo( default = False )), _("Send notification after bootup") )
-		self.setOption( 'send_before_shutdown', NoSave(ConfigYesNo( default = False )), _("Send notification before shutdown") )
-		self.setOption( 'send_before_standby',  NoSave(ConfigYesNo( default = True )),  _("Send notification before standby") )
-		self.setOption( 'send_after_standby',   NoSave(ConfigYesNo( default = True )),  _("Send notification after standby") )
-		
+		self.setOption('send_after_bootup', NoSave(ConfigYesNo(default=False)), _("Send notification after bootup"))
+		self.setOption('send_before_shutdown', NoSave(ConfigYesNo(default=False)), _("Send notification before shutdown"))
+		self.setOption('send_before_standby', NoSave(ConfigYesNo(default=True)), _("Send notification before standby"))
+		self.setOption('send_after_standby', NoSave(ConfigYesNo(default=True)), _("Send notification after standby"))
+
 	def leaveStandby(self, dummy=None):
 		#log.debug( "leave standby" )
-		
+
 		if self.getValue('send_after_standby'):
 			text = _("Enigma2 wakeup after Standby")
-		
+
 			# Push mail
 			from Plugins.Extensions.PushService.plugin import gPushService
 			if gPushService:
 				gPushService.push(self, SUBJECT, text)
-	
+
 	def standbyCountChanged(self, configElement=None):
 		#log.debug( "enter standby num", configElement.value )
 		from Screens.Standby import inStandby
 		inStandby.onClose.append(self.leaveStandby)
-		
+
 		if self.getValue('send_before_standby'):
 			text = _("Enigma2 going into Standby")
-		
+
 			# Push mail
 			from Plugins.Extensions.PushService.plugin import gPushService
 			if gPushService:
 				gPushService.push(self, SUBJECT, text)
-	
+
 	def begin(self):
 		# Is called after starting PushService
-		
+
 		if self.getValue('send_after_bootup'):
 			text = _("Enigma2 booted")
-		
+
 			# Push mail
 			from Plugins.Extensions.PushService.plugin import gPushService
 			if gPushService:
 				gPushService.push(self, SUBJECT, text)
-		
+
 		from Components.config import config
-		config.misc.standbyCounter.addNotifier(self.standbyCountChanged, initial_call = False)
+		config.misc.standbyCounter.addNotifier(self.standbyCountChanged, initial_call=False)
 
 	def end(self):
 		# Is called after stopping PushSerive
-		
+
 		if self.getValue('send_before_shutdown'):
 			text = _("Enigma2 shutdown initiated")
-		
+
 			# Push mail
 			from Plugins.Extensions.PushService.plugin import gPushService
 			if gPushService:
 				gPushService.push(self, SUBJECT, text)
-	
+
 	def run(self, callback, errback):
 		# At the end a plugin has to call one of the functions: callback or errback
 		# Callback should return with at least one of the parameter: Header, Body, Attachment
