@@ -74,7 +74,8 @@ class Modules(object):
 				log.exception( ("PushService Load exception: ") + str(e) )
 			finally:
 				# Since we may exit via an exception, close fp explicitly.
-				if fp: fp.close()
+				if fp:
+					fp.close()
 			
 			if not module:
 				log.debug( ("PushService No module available: ") + str(name) )

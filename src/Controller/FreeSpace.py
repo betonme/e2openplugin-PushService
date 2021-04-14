@@ -39,7 +39,8 @@ BODY    = _("Free disk space limit has been reached:\n") \
 #Adapted from: from Components.Harddisk import findMountPoint
 def mountpoint(path):
 	path = os.path.realpath(path)
-	if os.path.ismount(path) or len(path)==0: return path
+	if os.path.ismount(path) or len(path)==0:
+		return path
 	return mountpoint(os.path.dirname(path))
 			
 def getDevicebyMountpoint(hdm, mountpoint):
