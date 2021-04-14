@@ -32,8 +32,6 @@ import os
 SUBJECT = _("List of Files")
  
  
- 
- 
 class ListDir(ControllerBase):
  
         ForceSingleInstance = True
@@ -46,7 +44,6 @@ class ListDir(ControllerBase):
                 # Default configuration
                 self.setOption('path', NoSave(ConfigText(default="/media/hdd/movie/", fixed_size=False)), _("Where to check"))
 		self.setOption('ext', NoSave(ConfigText(default=".ts", fixed_size=False)), _("file extension"))
- 
  
         def run(self, callback, errback):
                 # At the end a plugin has to call one of the functions: callback or errback

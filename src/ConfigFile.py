@@ -28,6 +28,7 @@ from xml.etree.cElementTree import ElementTree, tostring, parse
 from . import _
 from Logger import log
 
+
 def indent(elem, level=0):
 	i = "\n" + level * "  "
 	if len(elem):

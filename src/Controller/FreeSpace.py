@@ -37,23 +37,28 @@ BODY = _("Free disk space limit has been reached:\n") \
 				+ _("Left:  %s")
 
 #Adapted from: from Components.Harddisk import findMountPoint
+
+
 def mountpoint(path):
 	path = os.path.realpath(path)
 	if os.path.ismount(path) or len(path) == 0:
 		return path
 	return mountpoint(os.path.dirname(path))
 			
+
 def getDevicebyMountpoint(hdm, mountpoint):
 	for x in hdm.partitions[:]:
 		if x.mountpoint == mountpoint:
 			return x.device
 	return None
 
+
 def getHDD(hdm, part):
 	for hdd in hdm.hdd:
 		if hdd.device == part[:3]:
 			return hdd
 	return None
+
 
 def timerToString(timer):
 	return str(timer.name) + "\t" \

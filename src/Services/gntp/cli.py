@@ -8,6 +8,7 @@ from optparse import OptionParser
 # Plugin internal
 from Plugins.Extensions.PushService.Logger import log
 
+
 class ClientParser(OptionParser):
 	def __init__(self):
 		OptionParser.__init__(self)
@@ -101,6 +102,7 @@ def main():
 	)
 	if result is not True:
 		exit(result)
+
 
 if __name__ == "__main__":
 	main()
